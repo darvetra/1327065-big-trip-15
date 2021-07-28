@@ -1,6 +1,7 @@
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createTripPriceInfoTemplate} from './view/trip-price.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
+import {createFilterTemplate} from './view/filter.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -17,5 +18,9 @@ const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
 render(tripInfoElement, createTripPriceInfoTemplate(), 'beforeend');
 
 // Отрисовывает меню
-const siteMenuElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');
+const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
+render(tripControlsNavigationElement, createSiteMenuTemplate(), 'beforeend');
+
+// Отрисовывает фильтр
+const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
+render(tripControlsFiltersElement, createFilterTemplate(), 'beforeend');

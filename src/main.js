@@ -1,3 +1,4 @@
+import {createTripInfoTemplate} from './view/trip-info.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
 
 const render = (container, template, place) => {
@@ -5,6 +6,11 @@ const render = (container, template, place) => {
 };
 
 const sitePageHeaderElement = document.querySelector('.page-header');
-const siteMenuElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
 
+// Отрисовывает информацию о поездке (маршрут, стоимость и дата)
+const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
+render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
+
+// Отрисовывает меню
+const siteMenuElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
 render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');

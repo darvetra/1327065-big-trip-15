@@ -5,6 +5,7 @@ import {createFilterTemplate} from './view/filter.js';
 import {createSortTemplate} from './view/sort.js';
 import {createTripEventsListTemplate} from './view/trip-events-list.js';
 import {createAddPointTemplate} from './view/point-add.js';
+import {createEditPointTemplate} from './view/point-edit.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -43,3 +44,6 @@ const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__l
 
 // Отрисовывает форму создания точки маршрута
 render(tripEventsListElement, createAddPointTemplate(), 'beforeend');
+
+// Отрисовывает форму редактирования точки маршрута
+render(tripEventsListElement, createEditPointTemplate(), 'afterbegin');

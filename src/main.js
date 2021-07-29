@@ -3,6 +3,8 @@ import {createTripPriceInfoTemplate} from './view/trip-price.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createFilterTemplate} from './view/filter.js';
 import {createSortTemplate} from './view/sort.js';
+import {createTripEventsListTemplate} from './view/trip-events-list.js';
+import {createAddPointTemplate} from './view/point-add.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -29,6 +31,15 @@ const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-co
 render(tripControlsFiltersElement, createFilterTemplate(), 'beforeend');
 
 // Основная часть
-// Отрисовывает сортировку
 const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
+
+// Отрисовывает сортировку
 render(tripEventsElement, createSortTemplate(), 'beforeend');
+
+// Отрисовывает список точек маршрута
+render(tripEventsElement, createTripEventsListTemplate(), 'beforeend');
+
+const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
+
+// Отрисовывает форму создания точки маршрута
+render(tripEventsListElement, createAddPointTemplate(), 'beforeend');

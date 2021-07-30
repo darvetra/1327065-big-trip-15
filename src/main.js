@@ -8,7 +8,7 @@ import {createAddPointTemplate} from './view/point-add.js';
 import {createEditPointTemplate} from './view/point-edit.js';
 import {createPointItemTemplate} from './view/point-item.js';
 
-const render = (container, template, place) => {
+const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
 
@@ -22,36 +22,36 @@ render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
 
 // Отрисовывает информацию о поездке (стоимость поездки)
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-render(tripInfoElement, createTripPriceInfoTemplate(), 'beforeend');
+render(tripInfoElement, createTripPriceInfoTemplate());
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(tripControlsNavigationElement, createSiteMenuTemplate(), 'beforeend');
+render(tripControlsNavigationElement, createSiteMenuTemplate());
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, createFilterTemplate(), 'beforeend');
+render(tripControlsFiltersElement, createFilterTemplate());
 
 // Основная часть
 const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
 
 // Отрисовывает сортировку
-render(tripEventsElement, createSortTemplate(), 'beforeend');
+render(tripEventsElement, createSortTemplate());
 
 // Отрисовывает список точек маршрута
-render(tripEventsElement, createPointListTemplate(), 'beforeend');
+render(tripEventsElement, createPointListTemplate());
 
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
 // Отрисовывает точку маршрута (в списке) (2 раза)
-render(tripEventsListElement, createPointItemTemplate(), 'beforeend');
-render(tripEventsListElement, createPointItemTemplate(), 'beforeend');
+render(tripEventsListElement, createPointItemTemplate());
+render(tripEventsListElement, createPointItemTemplate());
 
 // Отрисовывает форму создания точки маршрута
-render(tripEventsListElement, createAddPointTemplate(), 'beforeend');
+render(tripEventsListElement, createAddPointTemplate());
 
 // Отрисовывает форму редактирования точки маршрута
 render(tripEventsListElement, createEditPointTemplate(), 'afterbegin');
 
 // Отрисовывает точку маршрута (в списке)
-render(tripEventsListElement, createPointItemTemplate(), 'beforeend');
+render(tripEventsListElement, createPointItemTemplate());

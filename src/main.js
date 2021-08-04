@@ -64,5 +64,4 @@ render(tripEventsListElement, createAddPointTemplate());
 // Отрисовывает форму редактирования точки маршрута
 render(tripEventsListElement, createEditPointTemplate(), 'afterbegin');
 
-// Отрисовывает точку маршрута (в списке)
-render(tripEventsListElement, createPointItemTemplate());
+

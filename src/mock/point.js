@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+import dayjs from 'dayjs';
+
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
@@ -14,6 +17,8 @@ const generateDestination = () => {
     'Geneva',
     'New York',
     'Praha',
+    'San Francisco',
+    'Miami',
   ];
 
   const randomIndex = getRandomInteger(0, cities.length - 1);
@@ -39,10 +44,17 @@ const generatePointType = () => {
   return pointType[randomIndex];
 };
 
-const point = {
+const generateDate = () => {
+  const maxDaysGap = 7;
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+
+  return dayjs().add(daysGap, 'day').toDate();
+};
+
+export const generatePoint = () => ({
   'base_price': 1100,
-  'date_from': '2019-07-10T22:55:56.845Z',
-  'date_to': '2019-07-11T11:22:13.375Z',
+  'date_from': generateDate(),
+  'date_to': generateDate(),
   'destination': generateDestination(),
   'id': 0,
   'is_favorite': false,
@@ -56,8 +68,5 @@ const point = {
     },
   ],
   'type': generatePointType(),
-};
-
-
-
+});
 

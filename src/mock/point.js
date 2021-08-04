@@ -10,7 +10,7 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const generateDestination = () => {
+const generateCity = () => {
   const cities = [
     'Amsterdam',
     'Chamonix',
@@ -51,11 +51,22 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'day').toDate();
 };
 
+export const generateDestination = () => ({
+  'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
+  'name': generateCity(),
+  'pictures': [
+    {
+      'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
+      'description': 'Chamonix parliament building',
+    },
+  ],
+});
+
 export const generatePoint = () => ({
   'base_price': getRandomInteger(700, 7000),
   'date_from': generateDate(),
   'date_to': generateDate(),
-  'destination': generateDestination(),
+  'destination': 'Destination',
   'id': 0,
   'is_favorite': Boolean(getRandomInteger(0, 1)),
   'offers': [

@@ -52,12 +52,12 @@ const generateDate = () => {
 };
 
 export const generatePoint = () => ({
-  'base_price': 1100,
+  'base_price': getRandomInteger(700, 7000),
   'date_from': generateDate(),
   'date_to': generateDate(),
   'destination': generateDestination(),
   'id': 0,
-  'is_favorite': false,
+  'is_favorite': Boolean(getRandomInteger(0, 1)),
   'offers': [
     {
       'title': 'Choose meal',

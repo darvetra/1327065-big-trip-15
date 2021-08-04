@@ -8,6 +8,16 @@ import {createAddPointTemplate} from './view/point-add.js';
 import {createEditPointTemplate} from './view/point-edit.js';
 import {createPointItemTemplate} from './view/point-item.js';
 
+import {generatePoint} from './mock/point';
+
+
+const POINT_COUNT = 15;
+
+const points = new Array(POINT_COUNT).fill().map(generatePoint);
+
+// eslint-disable-next-line no-console
+console.log(points);
+
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
@@ -43,9 +53,10 @@ render(tripEventsElement, createPointListTemplate());
 
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
-// Отрисовывает точку маршрута (в списке) (2 раза)
-render(tripEventsListElement, createPointItemTemplate());
-render(tripEventsListElement, createPointItemTemplate());
+// Отрисовывает точку маршрута (в списке)
+for (let i = 0; i < POINT_COUNT; i++) {
+  render(tripEventsListElement, createPointItemTemplate(points[i]));
+}
 
 // Отрисовывает форму создания точки маршрута
 render(tripEventsListElement, createAddPointTemplate());

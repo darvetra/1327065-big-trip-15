@@ -129,16 +129,27 @@ const generateDescription = () => {
 
 
 /**
+ * Генерирует ссылку на случайную фотографию
+ * @returns {`http://picsum.photos/248/152?r=${number}`}
+ */
+const generatePictures = () => {
+  const pictureNumber = getRandomInteger(1, 1000);
+
+  return `http://picsum.photos/248/152?r=${pictureNumber}`;
+};
+
+
+/**
  * Генерирует точку маршрута (Место назначения)
  * @returns {{name: string, description: string, pictures: [{src: string, description: string}]}}
  */
-export const generateDestination = () => ({
+const generateDestination = () => ({
   'description': generateDescription(),
   'name': generateCity(),
   'pictures': [
     {
-      'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-      'description': 'Chamonix parliament building',
+      'src': generatePictures(),
+      'description': generateDescription(),
     },
   ],
 });
@@ -147,7 +158,7 @@ export const generatePoint = () => ({
   'base_price': getRandomInteger(700, 7000),
   'date_from': generateDate(),
   'date_to': generateDate(),
-  'destination': 'Destination',
+  'destination': generateDestination(),
   'id': 0,
   'is_favorite': Boolean(getRandomInteger(0, 1)),
   'offers': [

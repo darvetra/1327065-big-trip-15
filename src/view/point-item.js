@@ -1,5 +1,16 @@
 import dayjs from 'dayjs';
 
+const createEventOfferTemplate = (offer) => {
+  const title = offer.title;
+  const price = offer.price;
+
+  return `<li class="event__offer">
+      <span class="event__offer-title">${title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${price}</span>
+    </li>`;
+};
+
 export const createPointItemTemplate = (pointItem = {}) => {
   const {
     basePrice,
@@ -7,6 +18,7 @@ export const createPointItemTemplate = (pointItem = {}) => {
     dateTo,
     destination,
     isFavorite,
+    offers,
     type,
   } = pointItem;
 
@@ -17,6 +29,9 @@ export const createPointItemTemplate = (pointItem = {}) => {
   const timeFromView = dayjs(dateFrom).format('HH:mm');
   const timeToView = dayjs(dateTo).format('HH:mm');
 
+  // Разница в минутах
+  const minuteDiff = dayjs(dateFrom).diff(dayjs(dateTo), 'minute');
+
   // Город
   const city = destination.name;
 
@@ -25,8 +40,20 @@ export const createPointItemTemplate = (pointItem = {}) => {
     ? 'event__favorite-btn--active'
     : '';
 
-  // Разница в минутах
-  const minuteDiff = dayjs(dateFrom).diff(dayjs(dateTo), 'minute');
+
+  const createPointItemEventTemplate = (offersList) => {
+    const offersTemplate = [];
+
+    if (Array.isArray(offers)) {
+      for (const offer of offersList) {
+        offersTemplate.push(createEventOfferTemplate(offer));
+      }
+
+      return offersTemplate.join(' ');
+    }
+  };
+
+  const offerList = createPointItemEventTemplate(offers);
 
 
   return `<li class="trip-events__item">
@@ -49,11 +76,7 @@ export const createPointItemTemplate = (pointItem = {}) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
+        ${offerList}
       </ul>
       <button class="event__favorite-btn ${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>

@@ -89,10 +89,53 @@ const generatePointType = () => {
  * @returns {Date}
  */
 const generateDate = () => {
-  const maxDaysGap = 7;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const maxMinuteGap = 4320;
+  const daysGap = getRandomInteger(0, maxMinuteGap);
 
-  return dayjs().add(daysGap, 'day').toDate();
+  return dayjs().add(daysGap, 'minute').toDate();
+};
+
+
+/**
+ * Генерирует случайный(ые) оффер(ы) в точке маршрута
+ * @returns {*[]}
+ */
+const generateOffers = () => {
+
+  const numberOffers = getRandomInteger(0, 2);
+
+  const getRandomTitle = () => {
+    const titles = [
+      'Choose meal',
+      'Upgrade to comfort class',
+      'Order Uber',
+      'Add luggage',
+      'Switch to comfort',
+      'Rent a car',
+      'Add breakfast',
+      'Book tickets',
+      'Lunch in city',
+    ];
+    const randomIndex = getRandomInteger(0, titles.length - 1);
+
+    return titles[randomIndex];
+  };
+
+  const createOffer = (length) => {
+    const result = [];
+    for (let i = 1; i <= length; i++) {
+      const offer = {
+        'title': getRandomTitle(),
+        'price': getRandomInteger(10, 200),
+      };
+
+      result.push(offer);
+    }
+
+    return result;
+  };
+
+  return createOffer(numberOffers);
 };
 
 
@@ -161,15 +204,7 @@ export const generatePoint = () => ({
   'destination': generateDestination(),
   'id': 0,
   'isFavorite': Boolean(getRandomInteger(0, 1)),
-  'offers': [
-    {
-      'title': 'Choose meal',
-      'price': 180,
-    }, {
-      'title': 'Upgrade to comfort class',
-      'price': 50,
-    },
-  ],
+  'offers': generateOffers(),
   'type': generatePointType(),
 });
 

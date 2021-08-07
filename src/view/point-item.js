@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import {calculateMinuteDiff, convertDateTime, convertHumanDate, convertHumanTime} from '../utils.js';
 
 const createEventOfferTemplate = (offer) => {
   const title = offer.title;
@@ -22,15 +22,13 @@ export const createPointItemTemplate = (pointItem = {}) => {
     type,
   } = pointItem;
 
-  // Форматы дат
-  const dateFromView = dayjs(dateFrom).format('D MMMM');
-  const dateFromDateTime = dayjs(dateFrom).format('YYYY-MM-DDTHH:mm');
-  const dateToDateTime = dayjs(dateTo).format('YYYY-MM-DDTHH:mm');
-  const timeFromView = dayjs(dateFrom).format('HH:mm');
-  const timeToView = dayjs(dateTo).format('HH:mm');
-
-  // Разница в минутах
-  const minuteDiff = dayjs(dateFrom).diff(dayjs(dateTo), 'minute');
+  // Дата и время
+  const dateFromView = convertHumanDate(dateFrom);
+  const dateFromDateTime = convertDateTime(dateFrom);
+  const dateToDateTime = convertDateTime(dateTo);
+  const timeFromView = convertHumanTime(dateFrom);
+  const timeToView = convertHumanTime(dateTo);
+  const minuteDiff = calculateMinuteDiff(dateFrom, dateTo);
 
   // Город
   const city = destination.name;

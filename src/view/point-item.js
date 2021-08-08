@@ -1,4 +1,4 @@
-import {calculateMinuteDiff, convertDateTime, convertHumanDate, convertHumanTime} from '../utils.js';
+import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils.js';
 
 const createEventOfferTemplate = (offer) => {
   const title = offer.title;
@@ -35,7 +35,7 @@ export const createPointItemTemplate = (pointItem = {}) => {
   } = pointItem;
 
   // Дата и время
-  const dateFromView = convertHumanDate(dateFrom);
+  const dateFromView = convertHumanDay(dateFrom);
   const dateFromDateTime = convertDateTime(dateFrom);
   const dateToDateTime = convertDateTime(dateTo);
   const timeFromView = convertHumanTime(dateFrom);

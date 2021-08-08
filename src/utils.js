@@ -58,12 +58,22 @@ export const convertDateTime = (date) => date !== null
 
 
 /**
- * Возвращает дату в "человеческом формате" - 'D MMMM'
+ * Возвращает день и месяц в "человеческом формате" - 'D MMMM'
  * @param date
  * @returns {string|string}
  */
-export const convertHumanDate = (date) => date !== null
+export const convertHumanDay = (date) => date !== null
   ? dayjs(date).format('D MMMM')
+  : '';
+
+
+/**
+ * Возвращает дату и время в "человеческом формате" - 'DD/MM/YY HH:mm'
+ * @param date
+ * @returns {string|string}
+ */
+export const convertHumanDateAndTime = (date) => date !== null
+  ? dayjs(date).format('DD/MM/YY HH:mm')
   : '';
 
 
@@ -80,8 +90,8 @@ export const convertHumanTime = (date) => date !== null
 /**
  * Рассчитывает разницу между датами в минутах
  * @returns {number}
- * @param firstDate
- * @param secondDate
+ * @param reduced
+ * @param deducted
  */
-export const calculateMinuteDiff = (firstDate, secondDate) => dayjs(firstDate).diff(dayjs(secondDate), 'minute');
+export const calculateMinuteDiff = (reduced, deducted) => dayjs(deducted).diff(dayjs(reduced), 'minute');
 

@@ -11,6 +11,18 @@ const createEventOfferTemplate = (offer) => {
     </li>`;
 };
 
+const createPointItemEventTemplate = (offersList) => {
+  const offersTemplate = [];
+
+  if (Array.isArray(offersList)) {
+    for (const offer of offersList) {
+      offersTemplate.push(createEventOfferTemplate(offer));
+    }
+
+    return offersTemplate.join(' ');
+  }
+};
+
 export const createPointItemTemplate = (pointItem = {}) => {
   const {
     basePrice,
@@ -38,19 +50,7 @@ export const createPointItemTemplate = (pointItem = {}) => {
     ? 'event__favorite-btn--active'
     : '';
 
-
-  const createPointItemEventTemplate = (offersList) => {
-    const offersTemplate = [];
-
-    if (Array.isArray(offers)) {
-      for (const offer of offersList) {
-        offersTemplate.push(createEventOfferTemplate(offer));
-      }
-
-      return offersTemplate.join(' ');
-    }
-  };
-
+  // Офферы
   const offerList = createPointItemEventTemplate(offers);
 
 

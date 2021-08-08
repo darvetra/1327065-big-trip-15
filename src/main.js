@@ -14,9 +14,8 @@ import {generatePoint} from './mock/point';
 const POINT_COUNT = 15;
 
 const points = new Array(POINT_COUNT).fill().map((item, index) => generatePoint(index + 1));
+const otherPoints = points.slice(1);
 
-// eslint-disable-next-line no-console
-console.log(points);
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -54,12 +53,12 @@ render(tripEventsElement, createPointListTemplate());
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
 // Отрисовывает точку маршрута (в списке)
-for (let i = 0; i < POINT_COUNT; i++) {
-  render(tripEventsListElement, createPointItemTemplate(points[i]));
+for (let i = 0; i < otherPoints.length; i++) {
+  render(tripEventsListElement, createPointItemTemplate(otherPoints[i]));
 }
 
 // Отрисовывает форму создания точки маршрута
-render(tripEventsListElement, createAddPointTemplate(points[14]));
+render(tripEventsListElement, createAddPointTemplate(otherPoints[otherPoints.length - 1]));
 
 // Отрисовывает форму редактирования точки маршрута
 render(tripEventsListElement, createEditPointTemplate(points[0]), 'afterbegin');

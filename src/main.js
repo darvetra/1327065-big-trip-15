@@ -59,7 +59,7 @@ for (let i = 0; i < POINT_COUNT; i++) {
 }
 
 // Отрисовывает форму создания точки маршрута
-render(tripEventsListElement, createAddPointTemplate());
+render(tripEventsListElement, createAddPointTemplate(points[14]));
 
 // Отрисовывает форму редактирования точки маршрута
 render(tripEventsListElement, createEditPointTemplate(points[0]), 'afterbegin');

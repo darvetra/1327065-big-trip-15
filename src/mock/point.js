@@ -72,7 +72,7 @@ const generateOffers = () => {
     return titles[randomIndex];
   };
 
-  const createOffer = (length) => {
+  const createOfferArray = (length) => {
     const result = [];
     for (let i = 1; i <= length; i++) {
       const offer = {
@@ -86,7 +86,7 @@ const generateOffers = () => {
     return result;
   };
 
-  return createOffer(numberOffers);
+  return createOfferArray(numberOffers);
 };
 
 
@@ -123,13 +123,33 @@ const generateDescription = () => {
 
 
 /**
- * Генерирует ссылку на случайную фотографию
- * @returns {`http://picsum.photos/248/152?r=${number}`}
+ * Генерирует массив с объектами фотографий, включающих ссылку на случайную фотографию и описание
+ * @returns {*[]}
  */
 const generatePictures = () => {
-  const pictureNumber = getRandomInteger(1, 1000);
+  const numberPictures = getRandomInteger(0, 5);
 
-  return `http://picsum.photos/248/152?r=${pictureNumber}`;
+  const getRandomPicture = () => {
+    const pictureNumber = getRandomInteger(1, 1000);
+
+    return `https://picsum.photos/248/152?r=${pictureNumber}`;
+  };
+
+  const createPictureArray = (length) => {
+    const result = [];
+    for (let i = 1; i <= length; i++) {
+      const picture = {
+        'src': getRandomPicture(),
+        'description': generateDescription(),
+      };
+
+      result.push(picture);
+    }
+
+    return result;
+  };
+
+  return createPictureArray(numberPictures);
 };
 
 
@@ -140,12 +160,7 @@ const generatePictures = () => {
 const generateDestination = () => ({
   'description': generateDescription(),
   'name': generateCity(),
-  'pictures': [
-    {
-      'src': generatePictures(),
-      'description': generateDescription(),
-    },
-  ],
+  'pictures': generatePictures(),
 });
 
 export const generatePoint = (index) => ({

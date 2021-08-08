@@ -1,5 +1,6 @@
 import {convertHumanDateAndTime} from '../utils';
 
+
 const createEventOfferTemplate = (offer) => {
   const title = offer.title;
   const price = offer.price;
@@ -14,6 +15,7 @@ const createEventOfferTemplate = (offer) => {
   </div>`;
 };
 
+
 const createPointItemEventTemplate = (offersList) => {
   const offersTemplate = [];
 
@@ -25,6 +27,7 @@ const createPointItemEventTemplate = (offersList) => {
     return offersTemplate.join(' ');
   }
 };
+
 
 export const createEditPointTemplate = (pointItemEdit = {}) => {
   const {
@@ -43,11 +46,11 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
   const dateAndTimeFromView = convertHumanDateAndTime(dateFrom);
   const dateAndTimeToView = convertHumanDateAndTime(dateTo);
 
-  // Описание
-  const destinationDescription = destination.description;
-
   // Офферы
   const offerList = createPointItemEventTemplate(offers);
+
+  // Описание
+  const destinationDescription = destination.description;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">

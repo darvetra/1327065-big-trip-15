@@ -148,12 +148,12 @@ const generateDestination = () => ({
   ],
 });
 
-export const generatePoint = () => ({
+export const generatePoint = (index) => ({
   'basePrice': getRandomInteger(1, 300),
   'dateFrom': generateDate(),
   'dateTo': generateDate(),
   'destination': generateDestination(),
-  'id': 0,
+  'id': index,
   'isFavorite': Boolean(getRandomInteger(0, 1)),
   'offers': generateOffers(),
   'type': generatePointType(),

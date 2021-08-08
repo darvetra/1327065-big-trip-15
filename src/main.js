@@ -13,7 +13,7 @@ import {generatePoint} from './mock/point';
 
 const POINT_COUNT = 15;
 
-const points = new Array(POINT_COUNT).fill().map(generatePoint);
+const points = new Array(POINT_COUNT).fill().map((item, index) => generatePoint(index + 1));
 
 // eslint-disable-next-line no-console
 console.log(points);

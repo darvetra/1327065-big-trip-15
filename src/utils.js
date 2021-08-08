@@ -41,7 +41,7 @@ export const getRandomIntInclusive = (min, max) => {
  */
 export const generateDate = () => {
   const maxMinuteGap = 4320;
-  const minutesGap = getRandomInteger(0, maxMinuteGap);
+  const minutesGap = getRandomInteger(-maxMinuteGap, maxMinuteGap);
 
   return dayjs().add(minutesGap, 'minute').toDate();
 };

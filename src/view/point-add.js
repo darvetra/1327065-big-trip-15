@@ -27,17 +27,7 @@ const createDestinationPicturesTemplate = (picture = {}) => {
   return `<img class="event__photo" src="${src}" alt="${description}">`;
 };
 
-const showDestinationPictures = (picturesList) => {
-  const picturesTemplate = [];
-
-  if (Array.isArray(picturesList)) {
-    for (const picture of picturesList) {
-      picturesTemplate.push(createDestinationPicturesTemplate(picture));
-    }
-
-    return picturesTemplate.join(' ');
-  }
-};
+const createDestinationPicturesList = (picturesArray) => picturesArray.reduce((accumulator, currentValue) => `${accumulator} ${createDestinationPicturesTemplate(currentValue)}`, ' ');
 
 export const createAddPointTemplate = (pointItemAdd = {}) => {
   const {
@@ -62,7 +52,7 @@ export const createAddPointTemplate = (pointItemAdd = {}) => {
   const destinationDescription = destination.description;
 
   // Фотографии
-  const destinationPictures = showDestinationPictures(destination.pictures);
+  const destinationPictures = createDestinationPicturesList(destination.pictures);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">

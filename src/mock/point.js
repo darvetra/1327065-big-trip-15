@@ -2,7 +2,6 @@ import {generateDate, getRandomIntInclusive, getRandomInteger} from '../utils.js
 
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 
-
 /**
  * Генерирует моковые данные - название города
  * @returns {string}
@@ -22,7 +21,6 @@ const generateCity = () => {
 
   return cities[randomIndex];
 };
-
 
 /**
  * Генерирует моковые данные - тип точки маршрута
@@ -45,7 +43,6 @@ const generatePointType = () => {
 
   return pointType[randomIndex];
 };
-
 
 /**
  * Генерирует случайный(ые) оффер(ы) в точке маршрута
@@ -89,7 +86,6 @@ const generateOffers = () => {
   return createOfferArray(numberOffers);
 };
 
-
 /**
  * Генерирует описание места назначения
  * @returns {string}
@@ -121,7 +117,6 @@ const generateDescription = () => {
   return createDescription(sentenceNumbers);
 };
 
-
 /**
  * Генерирует массив с объектами фотографий, включающих ссылку на случайную фотографию и описание
  * @returns {*[]}
@@ -151,7 +146,6 @@ const generatePictures = () => {
 
   return createPictureArray(numberPictures);
 };
-
 
 /**
  * Генерирует точку маршрута (Место назначения)

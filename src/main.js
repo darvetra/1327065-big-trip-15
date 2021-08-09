@@ -10,12 +10,10 @@ import {createPointItemTemplate} from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
 
-
 const POINT_COUNT = 15;
 
 const points = new Array(POINT_COUNT).fill().map((item, index) => generatePoint(index + 1));
 const otherPoints = points.slice(1);
-
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);

@@ -11,17 +11,7 @@ const createEventOfferTemplate = (offer) => {
     </li>`;
 };
 
-const createPointItemEventTemplate = (offersList) => {
-  const offersTemplate = [];
-
-  if (Array.isArray(offersList)) {
-    for (const offer of offersList) {
-      offersTemplate.push(createEventOfferTemplate(offer));
-    }
-
-    return offersTemplate.join(' ');
-  }
-};
+const createEventOffer = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
 
 export const createPointItemTemplate = (pointItem = {}) => {
   const {
@@ -51,8 +41,7 @@ export const createPointItemTemplate = (pointItem = {}) => {
     : '';
 
   // Офферы
-  const offerList = createPointItemEventTemplate(offers);
-
+  const offerList = createEventOffer(offers);
 
   return `<li class="trip-events__item">
     <div class="event">

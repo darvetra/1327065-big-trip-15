@@ -1,6 +1,5 @@
 import {convertHumanDateAndTime} from '../utils';
 
-
 const createEventOfferTemplate = (offer) => {
   const title = offer.title;
   const price = offer.price;
@@ -15,19 +14,7 @@ const createEventOfferTemplate = (offer) => {
   </div>`;
 };
 
-
-const createPointItemEventTemplate = (offersList) => {
-  const offersTemplate = [];
-
-  if (Array.isArray(offersList)) {
-    for (const offer of offersList) {
-      offersTemplate.push(createEventOfferTemplate(offer));
-    }
-
-    return offersTemplate.join(' ');
-  }
-};
-
+const createEventOffer = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
 
 const createDestinationPicturesTemplate = (picture) => {
   const link = picture.src;
@@ -35,7 +22,6 @@ const createDestinationPicturesTemplate = (picture) => {
 
   return `<img class="event__photo" src="${link}" alt="${description}">`;
 };
-
 
 const showDestinationPictures = (picturesList) => {
   const picturesTemplate = [];
@@ -48,7 +34,6 @@ const showDestinationPictures = (picturesList) => {
     return picturesTemplate.join(' ');
   }
 };
-
 
 export const createAddPointTemplate = (pointItemAdd = {}) => {
   const {
@@ -67,7 +52,7 @@ export const createAddPointTemplate = (pointItemAdd = {}) => {
   const dateAndTimeToView = convertHumanDateAndTime(dateTo);
 
   // Офферы
-  const offerList = createPointItemEventTemplate(offers);
+  const offerList = createEventOffer(offers);
 
   // Описание
   const destinationDescription = destination.description;

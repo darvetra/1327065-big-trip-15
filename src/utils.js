@@ -14,7 +14,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-
 /**
  * Функция, возвращающая случайное целое число из переданного диапазона включительно.
  * Результат: целое число из диапазона "от...до".
@@ -34,7 +33,6 @@ export const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
 };
 
-
 /**
  * Генерирует случайную дату в заданном диапазоне
  * @returns {Date}
@@ -46,7 +44,6 @@ export const generateDate = () => {
   return dayjs().add(minutesGap, 'minute').toDate();
 };
 
-
 /**
  * Возвращает дату в формате YYYY-MM-DDTHH:mm, для атрибута datetime тега time
  * @param date
@@ -55,7 +52,6 @@ export const generateDate = () => {
 export const convertDateTime = (date) => date !== null
   ? dayjs(date).format('YYYY-MM-DDTHH:mm')
   : '';
-
 
 /**
  * Возвращает день и месяц в "человеческом формате" - 'D MMMM'
@@ -66,7 +62,6 @@ export const convertHumanDay = (date) => date !== null
   ? dayjs(date).format('D MMMM')
   : '';
 
-
 /**
  * Возвращает дату и время в "человеческом формате" - 'DD/MM/YY HH:mm'
  * @param date
@@ -76,7 +71,6 @@ export const convertHumanDateAndTime = (date) => date !== null
   ? dayjs(date).format('DD/MM/YY HH:mm')
   : '';
 
-
 /**
  * Возвращает время в "человеческом формате" - 'HH:mm'
  * @param date
@@ -85,7 +79,6 @@ export const convertHumanDateAndTime = (date) => date !== null
 export const convertHumanTime = (date) => date !== null
   ? dayjs(date).format('HH:mm')
   : '';
-
 
 /**
  * Рассчитывает разницу между датами в минутах

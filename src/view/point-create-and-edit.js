@@ -18,7 +18,37 @@ const createEventOfferTemplate = (offer = {}) => {
 
 const createEventOfferList = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
 
-export const createEditPointTemplate = (pointItemEdit = {}) => {
+const createDestinationPicturesTemplate = (picture = {}) => {
+  const {
+    src,
+    description,
+  } = picture;
+
+  return `<img class="event__photo" src="${src}" alt="${description}">`;
+};
+
+const createDestinationPicturesList = (picturesArray) => picturesArray.reduce((accumulator, currentValue) => `${accumulator} ${createDestinationPicturesTemplate(currentValue)}`, ' ');
+
+const createEditPointControlsTemplate = () => (
+  `<button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`
+);
+
+const createAddPointControlsTemplate = () => (
+  '<button class="event__reset-btn" type="reset">Cancel</button>'
+);
+
+const createAddPointPicturesContainerTemplate = (picturesArray) => (
+  `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${picturesArray}
+    </div>
+  </div>`
+);
+
+export const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   const {
     basePrice,
     dateFrom,
@@ -26,7 +56,7 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
     destination,
     offers,
     type,
-  } = pointItemEdit;
+  } = pointItem;
 
   // Город
   const city = destination.name;
@@ -35,11 +65,18 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
   const dateAndTimeFromView = convertHumanDateAndTime(dateFrom);
   const dateAndTimeToView = convertHumanDateAndTime(dateTo);
 
+  // Кнопки управления
+  const pointControls = isAddingForm ? createAddPointControlsTemplate() : createEditPointControlsTemplate();
+
   // Офферы
   const offerList = createEventOfferList(offers);
 
   // Описание
   const destinationDescription = destination.description;
+
+  // Фотографии
+  const destinationPictures = createDestinationPicturesList(destination.pictures);
+  const pointPicturesContainer = isAddingForm ? createAddPointPicturesContainerTemplate(destinationPictures) : '';
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -137,10 +174,7 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
+        ${pointControls}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -152,16 +186,16 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
               <label class="event__offer-label" for="event-offer-luggage-1">
                 <span class="event__offer-title">Add luggage</span>
                 &plus;&euro;&nbsp;
-                <span class="event__offer-price">50</span>
+                <span class="event__offer-price">30</span>
               </label>
             </div>
 
             <div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
               <label class="event__offer-label" for="event-offer-comfort-1">
-                <span class="event__offer-title">Switch to comfort</span>
+                <span class="event__offer-title">Switch to comfort class</span>
                 &plus;&euro;&nbsp;
-                <span class="event__offer-price">80</span>
+                <span class="event__offer-price">100</span>
               </label>
             </div>
 
@@ -200,6 +234,9 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destinationDescription}</p>
+
+          ${pointPicturesContainer}
+
         </section>
       </section>
     </form>

@@ -1,8 +1,10 @@
 import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils.js';
 
-const createEventOfferTemplate = (offer) => {
-  const title = offer.title;
-  const price = offer.price;
+const createEventOfferTemplate = (offer = {}) => {
+  const {
+    title,
+    price,
+  } = offer;
 
   return `<li class="event__offer">
       <span class="event__offer-title">${title}</span>
@@ -11,7 +13,7 @@ const createEventOfferTemplate = (offer) => {
     </li>`;
 };
 
-const createEventOffer = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
+const createEventOfferList = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
 
 export const createPointItemTemplate = (pointItem = {}) => {
   const {
@@ -41,7 +43,7 @@ export const createPointItemTemplate = (pointItem = {}) => {
     : '';
 
   // Офферы
-  const offerList = createEventOffer(offers);
+  const offerList = createEventOfferList(offers);
 
   return `<li class="trip-events__item">
     <div class="event">

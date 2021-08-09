@@ -1,8 +1,10 @@
 import {convertHumanDateAndTime} from '../utils';
 
-const createEventOfferTemplate = (offer) => {
-  const title = offer.title;
-  const price = offer.price;
+const createEventOfferTemplate = (offer = {}) => {
+  const {
+    title,
+    price,
+  } = offer;
 
   return `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
@@ -14,7 +16,7 @@ const createEventOfferTemplate = (offer) => {
   </div>`;
 };
 
-const createEventOffer = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
+const createEventOfferList = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
 
 export const createEditPointTemplate = (pointItemEdit = {}) => {
   const {
@@ -34,7 +36,7 @@ export const createEditPointTemplate = (pointItemEdit = {}) => {
   const dateAndTimeToView = convertHumanDateAndTime(dateTo);
 
   // Офферы
-  const offerList = createEventOffer(offers);
+  const offerList = createEventOfferList(offers);
 
   // Описание
   const destinationDescription = destination.description;

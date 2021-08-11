@@ -7,7 +7,7 @@ import FilterView from './view/filter.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list.js';
 import {createAddAndEditPointTemplate} from './view/point-create-and-edit.js';
-import {createPointItemTemplate} from './view/point-item.js';
+import PointItemView from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
 
@@ -49,7 +49,7 @@ const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__l
 
 // Отрисовывает точку маршрута (в списке)
 for (let i = 0; i < otherPoints.length; i++) {
-  renderTemplate(tripEventsListElement, createPointItemTemplate(otherPoints[i]));
+  renderElement(tripEventsListElement, new PointItemView(otherPoints[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 // Отрисовывает форму создания точки маршрута

@@ -80,7 +80,7 @@ const createPointItemTemplate = (pointItem = {}) => {
   </li>`;
 };
 
-export default class TripInfo {
+export default class PointItem {
   constructor(points) {
     this._points = points;
     this._element = null;

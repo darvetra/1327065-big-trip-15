@@ -1,4 +1,4 @@
-import {convertHumanDateAndTime} from '../utils';
+import {convertHumanDateAndTime, createElement} from '../utils';
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -241,5 +241,27 @@ export const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
       </section>
     </form>
   </li>`;
-
 };
+
+export default class PointAddAndEdit {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createAddAndEditPointTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

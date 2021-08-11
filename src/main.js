@@ -1,4 +1,4 @@
-import {renderTemplate, renderElement, RenderPosition} from './utils';
+import {renderElement, RenderPosition} from './utils';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceInfoView from './view/trip-price.js';
@@ -6,7 +6,7 @@ import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list.js';
-import {createAddAndEditPointTemplate} from './view/point-create-and-edit.js';
+import PointAddAndEditView from './view/point-create-and-edit.js';
 import PointItemView from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
@@ -53,9 +53,9 @@ for (let i = 0; i < otherPoints.length; i++) {
 }
 
 // Отрисовывает форму создания точки маршрута
-renderTemplate(tripEventsListElement, createAddAndEditPointTemplate(otherPoints[otherPoints.length - 1], 1));
+renderElement(tripEventsListElement, new PointAddAndEditView(otherPoints[otherPoints.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает форму редактирования точки маршрута
-renderTemplate(tripEventsListElement, createAddAndEditPointTemplate(points[0], 0), 'afterbegin');
+renderElement(tripEventsListElement, new PointAddAndEditView(points[0], 0).getElement(), RenderPosition.AFTERBEGIN);
 
 

@@ -5,7 +5,7 @@ import TripPriceInfoView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 import SortView from './view/sort.js';
-import {createPointListTemplate} from './view/point-list.js';
+import PointListView from './view/point-list.js';
 import {createAddAndEditPointTemplate} from './view/point-create-and-edit.js';
 import {createPointItemTemplate} from './view/point-item.js';
 
@@ -43,7 +43,7 @@ const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
 renderElement(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает список точек маршрута
-renderTemplate(tripEventsElement, createPointListTemplate());
+renderElement(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
 
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 

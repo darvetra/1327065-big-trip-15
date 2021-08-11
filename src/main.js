@@ -14,7 +14,6 @@ import {generatePoint} from './mock/point';
 const POINT_COUNT = 15;
 
 const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
-const otherPoints = points.slice(1);
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
@@ -72,13 +71,10 @@ render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOR
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
 // Отрисовывает точку маршрута
-for (let i = 0; i < otherPoints.length; i++) {
-  renderPoint(tripEventsListElement, otherPoints[i]);
+for (let i = 0; i < points.length; i++) {
+  renderPoint(tripEventsListElement, points[i]);
 }
 
 // Отрисовывает форму создания точки маршрута
-render(tripEventsListElement, new PointAddAndEditView(otherPoints[otherPoints.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
-
-// Отрисовывает форму редактирования точки маршрута
-render(tripEventsListElement, new PointAddAndEditView(points[0], 0).getElement(), RenderPosition.AFTERBEGIN);
+render(tripEventsListElement, new PointAddAndEditView(points[points.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
 

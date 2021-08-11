@@ -48,7 +48,7 @@ const createAddPointPicturesContainerTemplate = (picturesArray) => (
   </div>`
 );
 
-export const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
+const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   const {
     basePrice,
     dateFrom,
@@ -244,13 +244,14 @@ export const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
 };
 
 export default class PointAddAndEdit {
-  constructor(points) {
+  constructor(points, flag) {
     this._points = points;
+    this._flag = flag;
     this._element = null;
   }
 
   getTemplate() {
-    return createAddAndEditPointTemplate(this._points);
+    return createAddAndEditPointTemplate(this._points, this._flag);
   }
 
   getElement() {

@@ -35,7 +35,7 @@ const renderPoint = (pointListElement, point) => {
     replaceCardToForm();
   });
 
-  pointEditComponent.getElement().querySelector('.event__save-btn').addEventListener('submit', (evt) => {
+  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
   });
@@ -81,5 +81,4 @@ render(tripEventsListElement, new PointAddAndEditView(otherPoints[otherPoints.le
 
 // Отрисовывает форму редактирования точки маршрута
 render(tripEventsListElement, new PointAddAndEditView(points[0], 0).getElement(), RenderPosition.AFTERBEGIN);
-
 

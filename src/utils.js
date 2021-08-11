@@ -6,22 +6,12 @@ export const RenderPosition = {
 };
 
 /**
- * Отрисовывает шаблон
- * @param container
- * @param template
- * @param place
- */
-export const renderTemplate = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
-
-/**
  * Отрисовывает элемент по шаблону
  * @param container
  * @param element
  * @param place
  */
-export const renderElement = (container, element, place) => {
+export const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);

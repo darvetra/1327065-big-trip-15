@@ -2,7 +2,7 @@ import {renderTemplate, renderElement, RenderPosition} from './utils';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceInfoView from './view/trip-price.js';
-import {createSiteMenuTemplate} from './view/site-menu.js';
+import SiteMenuView from './view/site-menu.js';
 import {createFilterTemplate} from './view/filter.js';
 import SortView from './view/sort.js';
 import {createPointListTemplate} from './view/point-list.js';
@@ -30,7 +30,7 @@ renderElement(tripInfoElement, new TripPriceInfoView().getElement(), RenderPosit
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-renderTemplate(tripControlsNavigationElement, createSiteMenuTemplate());
+renderElement(tripControlsNavigationElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');

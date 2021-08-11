@@ -4,7 +4,7 @@ import TripInfoView from './view/trip-info.js';
 import TripPriceInfoView from './view/trip-price.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createFilterTemplate} from './view/filter.js';
-import {createSortTemplate} from './view/sort.js';
+import SortView from './view/sort.js';
 import {createPointListTemplate} from './view/point-list.js';
 import {createAddAndEditPointTemplate} from './view/point-create-and-edit.js';
 import {createPointItemTemplate} from './view/point-item.js';
@@ -40,7 +40,7 @@ renderTemplate(tripControlsFiltersElement, createFilterTemplate());
 const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
 
 // Отрисовывает сортировку
-renderTemplate(tripEventsElement, createSortTemplate());
+renderElement(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает список точек маршрута
 renderTemplate(tripEventsElement, createPointListTemplate());

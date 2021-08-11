@@ -1,7 +1,7 @@
-import {renderTemplate} from './utils';
+import {renderTemplate, renderElement, RenderPosition} from './utils';
 
 import {createTripInfoTemplate} from './view/trip-info.js';
-import {createTripPriceInfoTemplate} from './view/trip-price.js';
+import TripPriceInfoView from './view/trip-price.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createFilterTemplate} from './view/filter.js';
 import {createSortTemplate} from './view/sort.js';
@@ -26,7 +26,7 @@ renderTemplate(tripMainElement, createTripInfoTemplate(), 'afterbegin');
 
 // Отрисовывает информацию о поездке (стоимость поездки)
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-renderTemplate(tripInfoElement, createTripPriceInfoTemplate());
+renderElement(tripInfoElement, new TripPriceInfoView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');

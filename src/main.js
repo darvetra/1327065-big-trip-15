@@ -49,6 +49,11 @@ const renderPoint = (pointListElement, point) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
+  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
   render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 

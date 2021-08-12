@@ -71,8 +71,8 @@ render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOR
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
 // Отрисовывает точку маршрута
-points.forEach((point, index) => {
-  renderPoint(tripEventsListElement, points[index]);
+points.forEach((point) => {
+  renderPoint(tripEventsListElement, point);
 });
 
 // Отрисовывает форму создания точки маршрута

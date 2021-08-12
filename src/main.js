@@ -19,6 +19,13 @@ const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoin
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
 
+/**
+ * Отрисовывает точку маршрута и форму редактирования точки маршрута
+ * А также приводит их в действие
+ *
+ * @param pointListElement
+ * @param point
+ */
 const renderPoint = (pointListElement, point) => {
   const pointComponent = new PointItemView(point);
   const pointEditComponent = new PointAddAndEditView(point, 0);
@@ -58,6 +65,38 @@ const renderPoint = (pointListElement, point) => {
   render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
+/**
+ * Отрисовывает блок с точками маршрута
+ *
+ * @param container - куда отрисовыаем
+ * @param items - что отрисовываем
+ */
+const renderContentBlock = (container, items) => {
+
+  const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
+
+  if (items.length === 0) {
+    render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
+  } else {
+
+    // Отрисовывает сортировку
+    render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+
+    // Отрисовывает список точек маршрута
+    render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
+
+    const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
+
+    // Отрисовывает точку маршрута
+    items.forEach((point) => {
+      renderPoint(tripEventsListElement, point);
+    });
+
+    // Отрисовывает форму создания точки маршрута
+    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
+  }
+};
+
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
 const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
@@ -76,25 +115,4 @@ const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-co
 render(tripControlsFiltersElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
 
 // Основная часть
-const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
-
-if (points.length === 0) {
-  render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
-} else {
-
-  // Отрисовывает сортировку
-  render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
-
-  // Отрисовывает список точек маршрута
-  render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
-
-  const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
-
-  // Отрисовывает точку маршрута
-  points.forEach((point) => {
-    renderPoint(tripEventsListElement, point);
-  });
-
-  // Отрисовывает форму создания точки маршрута
-  render(tripEventsListElement, new PointAddAndEditView(points[points.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
-}
+renderContentBlock(sitePageMainElement, points);

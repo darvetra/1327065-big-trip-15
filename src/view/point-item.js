@@ -1,4 +1,4 @@
-import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils.js';
+import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime, createElement} from '../utils.js';
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -15,7 +15,7 @@ const createEventOfferTemplate = (offer = {}) => {
 
 const createEventOfferList = (offersArray) => offersArray.reduce((accumulator, currentValue) => `${accumulator} ${createEventOfferTemplate(currentValue)}`, ' ');
 
-export const createPointItemTemplate = (pointItem = {}) => {
+const createPointItemTemplate = (pointItem = {}) => {
   const {
     basePrice,
     dateFrom,
@@ -78,5 +78,27 @@ export const createPointItemTemplate = (pointItem = {}) => {
       </button>
     </div>
   </li>`;
-
 };
+
+export default class PointItem {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointItemTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

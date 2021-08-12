@@ -1,63 +1,80 @@
-import {createTripInfoTemplate} from './view/trip-info.js';
-import {createTripPriceInfoTemplate} from './view/trip-price.js';
-import {createSiteMenuTemplate} from './view/site-menu.js';
-import {createFilterTemplate} from './view/filter.js';
-import {createSortTemplate} from './view/sort.js';
-import {createPointListTemplate} from './view/point-list.js';
-import {createAddAndEditPointTemplate} from './view/point-create-and-edit.js';
-import {createPointItemTemplate} from './view/point-item.js';
+import {render, RenderPosition} from './utils';
+
+import TripInfoView from './view/trip-info.js';
+import TripPriceInfoView from './view/trip-price.js';
+import SiteMenuView from './view/site-menu.js';
+import FilterView from './view/filter.js';
+import SortView from './view/sort.js';
+import PointListView from './view/point-list.js';
+import PointAddAndEditView from './view/point-create-and-edit.js';
+import PointItemView from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
 
 const POINT_COUNT = 15;
 
 const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
-const otherPoints = points.slice(1);
-
-const render = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
 
+const renderPoint = (pointListElement, point) => {
+  const pointComponent = new PointItemView(point);
+  const pointEditComponent = new PointAddAndEditView(point, 0);
+
+  const replaceCardToForm = () => {
+    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+  });
+
+  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+
+  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
 const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
-render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
+render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-render(tripInfoElement, createTripPriceInfoTemplate());
+render(tripInfoElement, new TripPriceInfoView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(tripControlsNavigationElement, createSiteMenuTemplate());
+render(tripControlsNavigationElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, createFilterTemplate());
+render(tripControlsFiltersElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
 
 // Основная часть
 const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
 
 // Отрисовывает сортировку
-render(tripEventsElement, createSortTemplate());
+render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает список точек маршрута
-render(tripEventsElement, createPointListTemplate());
+render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
 
 const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
-// Отрисовывает точку маршрута (в списке)
-for (let i = 0; i < otherPoints.length; i++) {
-  render(tripEventsListElement, createPointItemTemplate(otherPoints[i]));
-}
+// Отрисовывает точку маршрута
+points.forEach((point) => {
+  renderPoint(tripEventsListElement, point);
+});
 
 // Отрисовывает форму создания точки маршрута
-render(tripEventsListElement, createAddAndEditPointTemplate(otherPoints[otherPoints.length - 1], 1));
-
-// Отрисовывает форму редактирования точки маршрута
-render(tripEventsListElement, createAddAndEditPointTemplate(points[0], 0), 'afterbegin');
-
+render(tripEventsListElement, new PointAddAndEditView(points[points.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
 

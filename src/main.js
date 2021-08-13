@@ -1,9 +1,10 @@
 import {render, RenderPosition} from './utils';
 
 import TripInfoView from './view/trip-info.js';
-import TripPriceInfoView from './view/trip-price.js';
+import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
+import NoPointView from './view/no-point.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list.js';
 import PointAddAndEditView from './view/point-create-and-edit.js';
@@ -11,13 +12,20 @@ import PointItemView from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
 
-const POINT_COUNT = 15;
+const POINT_COUNT = 3;
 
 const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
 
+/**
+ * Отрисовывает точку маршрута и форму редактирования точки маршрута
+ * А также приводит их в действие
+ *
+ * @param pointListElement
+ * @param point
+ */
 const renderPoint = (pointListElement, point) => {
   const pointComponent = new PointItemView(point);
   const pointEditComponent = new PointAddAndEditView(point, 0);
@@ -30,16 +38,63 @@ const renderPoint = (pointListElement, point) => {
     pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+/**
+ * Отрисовывает блок с точками маршрута
+ *
+ * @param container - куда отрисовыаем
+ * @param items - что отрисовываем
+ */
+const renderContentBlock = (container, items) => {
+
+  const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
+
+  if (items.length === 0) {
+    render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
+  } else {
+
+    // Отрисовывает сортировку
+    render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+
+    // Отрисовывает список точек маршрута
+    render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
+
+    const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
+
+    // Отрисовывает точку маршрута
+    items.forEach((point) => {
+      renderPoint(tripEventsListElement, point);
+    });
+
+    // Отрисовывает форму создания точки маршрута
+    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
+  }
 };
 
 // Хэдер
@@ -48,8 +103,11 @@ const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
 render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
+// По условию ТЗ в сумму должны также попадать доп.расходы, пофикси это в будущем, когда поймешь как это сделать ;)
+const totalPrice = Object.keys(points).reduce((total, key) => total + points[key].basePrice, 0);
+
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-render(tripInfoElement, new TripPriceInfoView().getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripPriceView(totalPrice).getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
@@ -60,21 +118,5 @@ const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-co
 render(tripControlsFiltersElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
 
 // Основная часть
-const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
-
-// Отрисовывает сортировку
-render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
-
-// Отрисовывает список точек маршрута
-render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
-
-const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
-
-// Отрисовывает точку маршрута
-points.forEach((point) => {
-  renderPoint(tripEventsListElement, point);
-});
-
-// Отрисовывает форму создания точки маршрута
-render(tripEventsListElement, new PointAddAndEditView(points[points.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
+renderContentBlock(sitePageMainElement, points);
 

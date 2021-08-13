@@ -103,7 +103,8 @@ const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
 render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
-const totalPrice = Object.keys(points).reduce((previous, key) => previous + points[key].basePrice, 0);
+// По условию ТЗ в сумму должны также попадать доп.расходы, пофикси это в будущем, когда поймешь как это сделать ;)
+const totalPrice = Object.keys(points).reduce((total, key) => total + points[key].basePrice, 0);
 
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
 render(tripInfoElement, new TripPriceView(totalPrice).getElement(), RenderPosition.BEFOREEND);

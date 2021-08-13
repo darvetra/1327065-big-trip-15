@@ -1,7 +1,7 @@
 import {render, RenderPosition} from './utils';
 
 import TripInfoView from './view/trip-info.js';
-import TripPriceInfoView from './view/trip-price.js';
+import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 import NoPointView from './view/no-point.js';
@@ -12,7 +12,7 @@ import PointItemView from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
 
-const POINT_COUNT = 15;
+const POINT_COUNT = 3;
 
 const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
 
@@ -103,8 +103,10 @@ const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
 render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
+const totalPrice = Object.keys(points).reduce((previous, key) => previous + points[key].basePrice, 0);
+
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-render(tripInfoElement, new TripPriceInfoView().getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripPriceView(totalPrice).getElement(), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
@@ -116,3 +118,4 @@ render(tripControlsFiltersElement, new FilterView().getElement(), RenderPosition
 
 // Основная часть
 renderContentBlock(sitePageMainElement, points);
+

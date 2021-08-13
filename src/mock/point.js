@@ -45,48 +45,6 @@ const generatePointType = () => {
 };
 
 /**
- * Генерирует случайный(ые) оффер(ы) в точке маршрута
- * @returns {*[]}
- */
-const generateOffers = () => {
-
-  const numberOffers = getRandomInteger(0, 2);
-
-  const getRandomTitle = () => {
-    const titles = [
-      'Choose meal',
-      'Upgrade to comfort class',
-      'Order Uber',
-      'Add luggage',
-      'Switch to comfort',
-      'Rent a car',
-      'Add breakfast',
-      'Book tickets',
-      'Lunch in city',
-    ];
-    const randomIndex = getRandomInteger(0, titles.length - 1);
-
-    return titles[randomIndex];
-  };
-
-  const createOfferArray = (length) => {
-    const result = [];
-    for (let i = 1; i <= length; i++) {
-      const offer = {
-        'title': getRandomTitle(),
-        'price': getRandomInteger(10, 200),
-      };
-
-      result.push(offer);
-    }
-
-    return result;
-  };
-
-  return createOfferArray(numberOffers);
-};
-
-/**
  * Генерирует описание места назначения
  * @returns {string}
  */
@@ -145,6 +103,48 @@ const generatePictures = () => {
   };
 
   return createPictureArray(numberPictures);
+};
+
+/**
+ * Генерирует случайный(ые) оффер(ы) в точке маршрута
+ * @returns {*[]}
+ */
+const generateOffers = () => {
+
+  const numberOffers = getRandomInteger(0, 2);
+
+  const getRandomTitle = () => {
+    const titles = [
+      'Choose meal',
+      'Upgrade to comfort class',
+      'Order Uber',
+      'Add luggage',
+      'Switch to comfort',
+      'Rent a car',
+      'Add breakfast',
+      'Book tickets',
+      'Lunch in city',
+    ];
+    const randomIndex = getRandomInteger(0, titles.length - 1);
+
+    return titles[randomIndex];
+  };
+
+  const createOfferArray = (length) => {
+    const result = [];
+    for (let i = 1; i <= length; i++) {
+      const offer = {
+        'title': getRandomTitle(),
+        'price': getRandomInteger(10, 200),
+      };
+
+      result.push(offer);
+    }
+
+    return result;
+  };
+
+  return createOfferArray(numberOffers);
 };
 
 /**

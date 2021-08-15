@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import minMax from 'dayjs/plugin/minMax';
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
@@ -132,3 +133,19 @@ export const convertHumanTime = (date) => date !== null
  */
 export const calculateMinuteDiff = (reduced, deducted) => dayjs(deducted).diff(dayjs(reduced), 'minute');
 
+/**
+ * На основе массива данных высчитывает информацию о поездке
+ * @param routePoints
+ * @returns {{travelEndDate: dayjs.Dayjs, travelStartDate: dayjs.Dayjs}}
+ */
+export const createTripInfo = (routePoints) => {
+  dayjs.extend(minMax);
+
+  const dateFromArray = routePoints.map((date) => dayjs(date.dateFrom));
+  const dateToArray = routePoints.map((date) => dayjs(date.dateTo));
+
+  return {
+    travelStartDate: convertHumanDay(dayjs.min(dateFromArray)),
+    travelEndDate: convertHumanDay(dayjs.max(dateToArray)),
+  };
+};

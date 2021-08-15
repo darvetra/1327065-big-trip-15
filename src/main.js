@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils';
+import {render, RenderPosition, createTripInfo} from './utils';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
@@ -12,7 +12,7 @@ import PointItemView from './view/point-item.js';
 
 import {generatePoint} from './mock/point';
 
-const POINT_COUNT = 3;
+const POINT_COUNT = 15;
 
 const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
 
@@ -100,7 +100,7 @@ const renderContentBlock = (container, items) => {
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
 const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
-render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
+render(tripMainElement, new TripInfoView(createTripInfo(points)).getElement(), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
 // По условию ТЗ в сумму должны также попадать доп.расходы, пофикси это в будущем, когда поймешь как это сделать ;)

@@ -8,7 +8,7 @@ import NoPointView from './view/no-point.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list.js';
 import PointAddAndEditView from './view/point-create-and-edit.js';
-import PointItemView from './view/point-item.js';
+import PointView from './view/point.js';
 
 import {generatePoint} from './mock/point';
 
@@ -27,7 +27,7 @@ const sitePageMainElement = document.querySelector('.page-main');
  * @param point
  */
 const renderPoint = (pointListElement, point) => {
-  const pointComponent = new PointItemView(point);
+  const pointComponent = new PointView(point);
   const pointEditComponent = new PointAddAndEditView(point, 0);
 
   const replaceCardToForm = () => {
@@ -46,7 +46,7 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHandler(() => {
     replaceCardToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });

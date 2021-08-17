@@ -245,13 +245,25 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
 };
 
 export default class PointAddAndEdit extends AbstractView {
-  constructor(points, flag) {
+  constructor(point, flag) {
     super();
-    this._points = points;
+    this._point = point;
     this._flag = flag;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
-    return createAddAndEditPointTemplate(this._points, this._flag);
+    return createAddAndEditPointTemplate(this._point, this._flag);
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 }

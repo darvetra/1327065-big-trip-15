@@ -51,8 +51,7 @@ const renderPoint = (pointListElement, point) => {
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });

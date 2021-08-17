@@ -1,4 +1,5 @@
-import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime, createElement} from '../utils.js';
+import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -80,25 +81,13 @@ const createPointItemTemplate = (pointItem = {}) => {
   </li>`;
 };
 
-export default class PointItem {
+export default class PointItem extends AbstractView {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointItemTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

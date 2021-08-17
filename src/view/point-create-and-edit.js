@@ -1,4 +1,5 @@
-import {convertHumanDateAndTime, createElement} from '../utils';
+import {convertHumanDateAndTime} from '../utils';
+import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -243,26 +244,14 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   </li>`;
 };
 
-export default class PointAddAndEdit {
+export default class PointAddAndEdit extends AbstractView {
   constructor(points, flag) {
+    super();
     this._points = points;
     this._flag = flag;
-    this._element = null;
   }
 
   getTemplate() {
     return createAddAndEditPointTemplate(this._points, this._flag);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

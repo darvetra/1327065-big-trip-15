@@ -56,7 +56,7 @@ const renderPoint = (pointListElement, point) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointEditComponent.setFormRollupHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });

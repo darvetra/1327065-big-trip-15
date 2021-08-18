@@ -251,6 +251,7 @@ export default class PointAddAndEdit extends AbstractView {
     this._flag = flag;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formRollupHandler = this._formRollupHandler.bind(this);
   }
 
   getTemplate() {
@@ -265,5 +266,15 @@ export default class PointAddAndEdit extends AbstractView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _formRollupHandler(evt) {
+    evt.preventDefault();
+    this._callback.formRollup();
+  }
+
+  setFormRollupHandler(callback) {
+    this._callback.formRollup = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formSubmitHandler);
   }
 }

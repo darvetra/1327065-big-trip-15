@@ -1,4 +1,5 @@
-import {generateDate, getRandomIntInclusive, getRandomInteger} from '../utils.js';
+import {getRandomIntInclusive, getRandomInteger} from '../utils/common';
+import {generateDate} from '../utils/date';
 
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 

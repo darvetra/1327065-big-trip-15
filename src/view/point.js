@@ -1,4 +1,4 @@
-import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils.js';
+import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils/date';
 import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {

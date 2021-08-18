@@ -1,4 +1,4 @@
-import {convertHumanDateAndTime} from '../utils';
+import {convertHumanDateAndTime} from '../utils/date';
 import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {

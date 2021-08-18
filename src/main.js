@@ -1,4 +1,5 @@
-import {render, RenderPosition, createTripInfo} from './utils';
+import {render, RenderPosition} from './utils/render';
+import {createTripInfo} from './utils/date';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';

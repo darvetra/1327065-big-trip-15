@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils/render';
+import {render, replace, RenderPosition} from './utils/render';
 import {createTripInfo} from './utils/date';
 
 import TripInfoView from './view/trip-info.js';
@@ -32,11 +32,11 @@ const renderPoint = (pointListElement, point) => {
   const pointEditComponent = new PointAddAndEditView(point, 0);
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {

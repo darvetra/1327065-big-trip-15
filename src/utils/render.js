@@ -1,3 +1,5 @@
+import Abstract from '../view/abstract.js';
+
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -6,16 +8,24 @@ export const RenderPosition = {
 /**
  * Отрисовывает элемент по шаблону
  * @param container
- * @param element
+ * @param child
  * @param place
  */
-export const render = (container, element, place) => {
+export const render = (container, child, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (child instanceof Abstract) {
+    child = child.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(element);
+      container.append(child);
       break;
   }
 };

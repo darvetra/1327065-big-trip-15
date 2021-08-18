@@ -62,7 +62,7 @@ const renderPoint = (pointListElement, point) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 /**
@@ -76,14 +76,14 @@ const renderContentBlock = (container, items) => {
   const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
 
   if (items.length === 0) {
-    render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new NoPointView(), RenderPosition.BEFOREEND);
   } else {
 
     // Отрисовывает сортировку
-    render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new SortView(), RenderPosition.BEFOREEND);
 
     // Отрисовывает список точек маршрута
-    render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new PointListView(), RenderPosition.BEFOREEND);
 
     const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
@@ -93,29 +93,29 @@ const renderContentBlock = (container, items) => {
     });
 
     // Отрисовывает форму создания точки маршрута
-    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1), RenderPosition.BEFOREEND);
   }
 };
 
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
 const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
-render(tripMainElement, new TripInfoView(createTripInfo(points)).getElement(), RenderPosition.AFTERBEGIN);
+render(tripMainElement, new TripInfoView(createTripInfo(points)), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
 // По условию ТЗ в сумму должны также попадать доп.расходы, пофикси это в будущем, когда поймешь как это сделать ;)
 const totalPrice = Object.keys(points).reduce((total, key) => total + points[key].basePrice, 0);
 
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-render(tripInfoElement, new TripPriceView(totalPrice).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripPriceView(totalPrice), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(tripControlsNavigationElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
+render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
 
 // Основная часть
 renderContentBlock(sitePageMainElement, points);

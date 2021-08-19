@@ -1,4 +1,5 @@
-import {render, RenderPosition} from './utils';
+import {render, replace, RenderPosition} from './utils/render';
+import {createTripInfo} from './utils/date';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
@@ -8,11 +9,11 @@ import NoPointView from './view/no-point.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list.js';
 import PointAddAndEditView from './view/point-create-and-edit.js';
-import PointItemView from './view/point-item.js';
+import PointView from './view/point.js';
 
 import {generatePoint} from './mock/point';
 
-const POINT_COUNT = 3;
+const POINT_COUNT = 15;
 
 const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
 
@@ -27,15 +28,15 @@ const sitePageMainElement = document.querySelector('.page-main');
  * @param point
  */
 const renderPoint = (pointListElement, point) => {
-  const pointComponent = new PointItemView(point);
+  const pointComponent = new PointView(point);
   const pointEditComponent = new PointAddAndEditView(point, 0);
 
   const replaceCardToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceFormToCard = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -46,23 +47,22 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHandler(() => {
     replaceCardToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointEditComponent.setFormRollupHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 /**
@@ -76,14 +76,14 @@ const renderContentBlock = (container, items) => {
   const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
 
   if (items.length === 0) {
-    render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new NoPointView(), RenderPosition.BEFOREEND);
   } else {
 
     // Отрисовывает сортировку
-    render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new SortView(), RenderPosition.BEFOREEND);
 
     // Отрисовывает список точек маршрута
-    render(tripEventsElement, new PointListView().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new PointListView(), RenderPosition.BEFOREEND);
 
     const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
 
@@ -93,29 +93,29 @@ const renderContentBlock = (container, items) => {
     });
 
     // Отрисовывает форму создания точки маршрута
-    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1).getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1), RenderPosition.BEFOREEND);
   }
 };
 
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
 const tripMainElement = sitePageHeaderElement.querySelector('.trip-main');
-render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
+render(tripMainElement, new TripInfoView(createTripInfo(points)), RenderPosition.AFTERBEGIN);
 
 // Отрисовывает информацию о поездке (стоимость поездки)
 // По условию ТЗ в сумму должны также попадать доп.расходы, пофикси это в будущем, когда поймешь как это сделать ;)
 const totalPrice = Object.keys(points).reduce((total, key) => total + points[key].basePrice, 0);
 
 const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
-render(tripInfoElement, new TripPriceView(totalPrice).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripPriceView(totalPrice), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(tripControlsNavigationElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
+render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
 
 // Основная часть
 renderContentBlock(sitePageMainElement, points);

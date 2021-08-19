@@ -1,4 +1,5 @@
-import {convertHumanDateAndTime, createElement} from '../utils';
+import {convertHumanDateAndTime} from '../utils/date';
+import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -243,26 +244,37 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   </li>`;
 };
 
-export default class PointAddAndEdit {
-  constructor(points, flag) {
-    this._points = points;
+export default class PointAddAndEdit extends AbstractView {
+  constructor(point, flag) {
+    super();
+    this._point = point;
     this._flag = flag;
-    this._element = null;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formRollupHandler = this._formRollupHandler.bind(this);
   }
 
   getTemplate() {
-    return createAddAndEditPointTemplate(this._points, this._flag);
+    return createAddAndEditPointTemplate(this._point, this._flag);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _formRollupHandler(evt) {
+    evt.preventDefault();
+    this._callback.formRollup();
+  }
+
+  setFormRollupHandler(callback) {
+    this._callback.formRollup = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formSubmitHandler);
   }
 }

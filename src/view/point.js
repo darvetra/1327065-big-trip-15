@@ -1,4 +1,5 @@
-import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime, createElement} from '../utils.js';
+import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils/date';
+import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -80,25 +81,40 @@ const createPointItemTemplate = (pointItem = {}) => {
   </li>`;
 };
 
-export default class PointItem {
-  constructor(points) {
-    this._points = points;
-    this._element = null;
+export default class Point extends AbstractView {
+  constructor(point) {
+    super();
+    this._point = point;
+
+    // 4. Теперь обработчик - метод класса, а не стрелочная функция.
+    // Поэтому при передаче в addEventListener он теряет контекст (this),
+    // а с контекстом - доступ к свойствам и методам.
+    // Чтобы такого не происходило, нужно насильно
+    // привязать обработчик к контексту с помощью bind
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPointItemTemplate(this._points);
+    return createPointItemTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _editClickHandler(evt) {
+    evt.preventDefault();
 
-    return this._element;
+    // 3. А внутри абстрактного обработчика вызовем колбэк
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    // Мы могли бы сразу передать callback в addEventListener,
+    // но тогда бы для удаления обработчика в будущем,
+    // нам нужно было бы производить это снаружи, где-то там,
+    // где мы вызывали setClickHandler, что не всегда удобно
+
+    // 1. Поэтому колбэк мы запишем во внутреннее свойство
+    this._callback.editClick = callback;
+
+    // 2. В addEventListener передадим абстрактный обработчик
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }

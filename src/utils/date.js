@@ -2,12 +2,14 @@ import {getRandomInteger} from './common';
 import dayjs from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 
+const MINUTE_GAP = 60 * 24 * 3; // 4320 минут = 72 часа = 3 дня
+
 /**
  * Генерирует случайную дату в заданном диапазоне
  * @returns {Date}
  */
 export const generateDate = () => {
-  const maxMinuteGap = 4320;
+  const maxMinuteGap = MINUTE_GAP;
   const minutesGap = getRandomInteger(-maxMinuteGap, maxMinuteGap);
 
   return dayjs().add(minutesGap, 'minute').toDate();

@@ -1,8 +1,10 @@
-import {render, RenderPosition} from '../utils/render';
+import {render, RenderPosition, replace} from '../utils/render';
 
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import NoPointView from '../view/no-point.js';
+import PointView from '../view/point';
+import PointAddAndEditView from '../view/point-create-and-edit';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -26,9 +28,44 @@ export default class Trip {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderPoint() {
+  _renderPoint(pointListElement, point) {
     // Метод, куда уйдёт логика по созданию и рендерингу компонетов путешествия,
     // текущая функция renderPoint в main.js
+    const pointComponent = new PointView(point);
+    const pointEditComponent = new PointAddAndEditView(point, 0);
+
+    const replaceCardToForm = () => {
+      replace(pointEditComponent, pointComponent);
+    };
+
+    const replaceFormToCard = () => {
+      replace(pointComponent, pointEditComponent);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    pointComponent.setEditClickHandler(() => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.setFormSubmitHandler(() => {
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.setFormRollupHandler(() => {
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    render(this._pointListComponent, pointComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoPoint() {

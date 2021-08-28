@@ -23,15 +23,17 @@ export default class Trip {
 
   _renderSort() {
     // Метод для рендеринга сортировки
+    render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderPoint() {
-    // Метод, куда уйдёт логика созданию и рендерингу компонетов путешествия,
+    // Метод, куда уйдёт логика по созданию и рендерингу компонетов путешествия,
     // текущая функция renderPoint в main.js
   }
 
   _renderNoPoint() {
     // Метод для рендеринга заглушки
+    render(this._tripContainer, this._noPointComponent, RenderPosition.BEFOREEND);
   }
 
   _renderContentBlock() {
@@ -39,7 +41,7 @@ export default class Trip {
     // бОльшая часть текущей функции renderContentBlock в main.js
 
     if (this._tripPoints.length === 0) {
-      this._renderNoPoints();
+      this._renderNoPoint();
     } else {
 
       // Отрисовывает сортировку

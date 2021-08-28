@@ -1,3 +1,4 @@
+import {render, RenderPosition} from '../utils/render';
 
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
@@ -16,6 +17,8 @@ export default class Trip {
     this._tripPoints = tripPoints.slice();
     // Метод для инициализации (начала работы) модуля,
     // малая часть текущей функции renderContentBlock в main.js
+
+    render(this._tripContainer, this._pointListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
@@ -34,5 +37,16 @@ export default class Trip {
   _renderContentBlock() {
     // Метод для инициализации (начала работы) модуля,
     // бОльшая часть текущей функции renderContentBlock в main.js
+
+    if (this._tripPoints.length === 0) {
+      this._renderNoPoints();
+    } else {
+
+      // Отрисовывает сортировку
+      this._renderSort();
+
+      // Отрисовывает список точек маршрута
+      this._renderPoint();
+    }
   }
 }

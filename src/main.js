@@ -1,18 +1,14 @@
-import {render, replace, RenderPosition} from './utils/render';
-import {createTripInfo} from './utils/date';
+import {render, RenderPosition} from './utils/render.js';
+import {createTripInfo} from './utils/date.js';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 
-import NoPointView from './view/no-point.js';
-import SortView from './view/sort.js';
-import PointListView from './view/point-list.js';
-import PointAddAndEditView from './view/point-create-and-edit.js';
-import PointView from './view/point.js';
+import {generatePoint} from './mock/point.js';
 
-import {generatePoint} from './mock/point';
+import TripPresenter from './presenter/trip.js';
 
 const POINT_COUNT = 15;
 
@@ -20,83 +16,9 @@ const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoin
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
+const siteBodyContainerElement = sitePageMainElement.querySelector('.page-body__container');
 
-/**
- * Отрисовывает точку маршрута и форму редактирования точки маршрута
- * А также приводит их в действие
- *
- * @param pointListElement
- * @param point
- */
-const renderPoint = (pointListElement, point) => {
-  const pointComponent = new PointView(point);
-  const pointEditComponent = new PointAddAndEditView(point, 0);
-
-  const replaceCardToForm = () => {
-    replace(pointEditComponent, pointComponent);
-  };
-
-  const replaceFormToCard = () => {
-    replace(pointComponent, pointEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-  };
-
-  pointComponent.setEditClickHandler(() => {
-    replaceCardToForm();
-    document.addEventListener('keydown', onEscKeyDown);
-  });
-
-  pointEditComponent.setFormSubmitHandler(() => {
-    replaceFormToCard();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
-
-  pointEditComponent.setFormRollupHandler(() => {
-    replaceFormToCard();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
-
-  render(pointListElement, pointComponent, RenderPosition.BEFOREEND);
-};
-
-/**
- * Отрисовывает блок с точками маршрута
- *
- * @param container - куда отрисовыаем
- * @param items - что отрисовываем
- */
-const renderContentBlock = (container, items) => {
-
-  const tripEventsElement = sitePageMainElement.querySelector('.trip-events');
-
-  if (items.length === 0) {
-    render(tripEventsElement, new NoPointView(), RenderPosition.BEFOREEND);
-  } else {
-
-    // Отрисовывает сортировку
-    render(tripEventsElement, new SortView(), RenderPosition.BEFOREEND);
-
-    // Отрисовывает список точек маршрута
-    render(tripEventsElement, new PointListView(), RenderPosition.BEFOREEND);
-
-    const tripEventsListElement = sitePageMainElement.querySelector('.trip-events__list');
-
-    // Отрисовывает точку маршрута
-    items.forEach((point) => {
-      renderPoint(tripEventsListElement, point);
-    });
-
-    // Отрисовывает форму создания точки маршрута
-    render(tripEventsListElement, new PointAddAndEditView(items[items.length - 1], 1), RenderPosition.BEFOREEND);
-  }
-};
+const tripPresenter = new TripPresenter(siteBodyContainerElement);
 
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
@@ -119,5 +41,5 @@ const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-co
 render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
 
 // Основная часть
-renderContentBlock(sitePageMainElement, points);
+tripPresenter.init(points);
 

@@ -5,6 +5,7 @@ import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
+
 import NoPointView from './view/no-point.js';
 import SortView from './view/sort.js';
 import PointListView from './view/point-list.js';

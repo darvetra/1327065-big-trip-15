@@ -4,13 +4,15 @@ import PointView from '../view/point.js';
 import PointAddAndEditView from '../view/point-create-and-edit.js';
 
 export default class Point {
-  constructor(pointListContainer) {
+  constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
+    this._changeData = changeData;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
 
     this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormRollup = this._handleFormRollup.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
@@ -26,6 +28,7 @@ export default class Point {
     this._pointEditComponent = new PointAddAndEditView(point, 0);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormRollupHandler(this._handleFormSubmit);
 
@@ -74,7 +77,20 @@ export default class Point {
     this._replaceCardToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._point,
+        {
+          isFavorite: !this._point.isFavorite,
+        },
+      ),
+    );
+  }
+
+  _handleFormSubmit(point) {
+    this._changeData(point);
     this._replaceFormToCard();
   }
 

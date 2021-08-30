@@ -92,6 +92,7 @@ export default class Point extends AbstractView {
     // Чтобы такого не происходило, нужно насильно
     // привязать обработчик к контексту с помощью bind
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -105,6 +106,11 @@ export default class Point extends AbstractView {
     this._callback.editClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
   setEditClickHandler(callback) {
     // Мы могли бы сразу передать callback в addEventListener,
     // но тогда бы для удаления обработчика в будущем,
@@ -116,5 +122,10 @@ export default class Point extends AbstractView {
 
     // 2. В addEventListener передадим абстрактный обработчик
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
   }
 }

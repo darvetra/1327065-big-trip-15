@@ -44,7 +44,7 @@ export default class Trip {
   _renderPoint(container, point) {
     // Метод, с логикой по созданию и рендерингу точки маршрута
 
-    const pointPresenter = new PointPresenter(this._pointListComponent);
+    const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);
   }

@@ -1,11 +1,11 @@
-import {render, RenderPosition, replace} from '../utils/render.js';
+import {render, RenderPosition} from '../utils/render.js';
 
 import EventsView from '../view/events.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import NoPointView from '../view/no-point.js';
-import PointView from '../view/point.js';
-import PointAddAndEditView from '../view/point-create-and-edit.js';
+
+import PointPresenter from './point.js';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -35,41 +35,8 @@ export default class Trip {
   _renderPoint(container, point) {
     // Метод, с логикой по созданию и рендерингу точки маршрута
 
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new PointAddAndEditView(point, 0);
-
-    const replaceCardToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    pointComponent.setEditClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setFormRollupHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(this._pointListComponent, pointComponent, RenderPosition.BEFOREEND);
+    const pointPresenter = new PointPresenter(this._pointListComponent);
+    pointPresenter.init(point);
   }
 
   _renderPoints(container, items) {

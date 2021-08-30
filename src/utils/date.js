@@ -62,7 +62,7 @@ export const calculateMinuteDiff = (reduced, deducted) => dayjs(deducted).diff(d
 /**
  * На основе массива данных высчитывает информацию о поездке
  * @param routePoints
- * @returns {{travelEndDate: dayjs.Dayjs, travelStartDate: dayjs.Dayjs}}
+ * @returns {{generalEndDate: dayjs.Dayjs, generalStartDate: dayjs.Dayjs}}
  */
 export const createTripInfo = (routePoints) => {
   dayjs.extend(minMax);
@@ -71,7 +71,7 @@ export const createTripInfo = (routePoints) => {
   const dateToArray = routePoints.map((date) => dayjs(date.dateTo));
 
   return {
-    travelStartDate: convertHumanDay(dayjs.min(dateFromArray)),
-    travelEndDate: convertHumanDay(dayjs.max(dateToArray)),
+    generalStartDate: convertHumanDay(dayjs.min(dateFromArray)),
+    generalEndDate: convertHumanDay(dayjs.max(dateToArray)),
   };
 };

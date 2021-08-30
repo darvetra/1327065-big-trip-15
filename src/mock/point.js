@@ -1,6 +1,8 @@
 import {getRandomIntInclusive, getRandomInteger} from '../utils/common';
 import {generateDate} from '../utils/date';
 
+import {nanoid} from 'nanoid';
+
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 
 /**
@@ -158,12 +160,12 @@ const generateDestination = () => ({
   'pictures': generatePictures(),
 });
 
-export const generatePoint = (index) => ({
+export const generatePoint = () => ({
   'basePrice': getRandomInteger(1, 300),
   'dateFrom': generateDate(),
   'dateTo': generateDate(),
   'destination': generateDestination(),
-  'id': index,
+  'id': nanoid(),
   'isFavorite': Boolean(getRandomInteger(0, 1)),
   'offers': generateOffers(),
   'type': generatePointType(),

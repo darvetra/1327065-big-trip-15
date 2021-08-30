@@ -10,6 +10,7 @@ import PointPresenter from './point.js';
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._pointPresenter = new Map();
 
     this._eventsComponent = new EventsView();
     this._sortComponent = new SortView();
@@ -37,9 +38,15 @@ export default class Trip {
 
     const pointPresenter = new PointPresenter(this._pointListComponent);
     pointPresenter.init(point);
+    this._pointPresenter.set(point.id, pointPresenter);
   }
 
-  _renderPoints(container, items) {
+  _clearPointList() {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter.clear();
+  }
+
+  _renderPointList(container, items) {
     // метод по отрисовки точек маршрута в списке
     items.forEach((point) => {
       this._renderPoint(container, point);
@@ -62,9 +69,7 @@ export default class Trip {
       this._renderSort();
 
       // Отрисовывает точки маршрута  в списке
-      this._renderPoints(this._pointListComponent, this._tripPoints);
-
-
+      this._renderPointList(this._pointListComponent, this._tripPoints);
     }
   }
 }

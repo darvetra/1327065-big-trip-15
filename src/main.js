@@ -12,7 +12,7 @@ import TripPresenter from './presenter/trip.js';
 
 const POINT_COUNT = 15;
 
-const points = Array.from({ length: POINT_COUNT }, (item, index) => generatePoint(index));
+const points = Array.from({ length: POINT_COUNT }, () => generatePoint());
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');

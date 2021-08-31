@@ -1,5 +1,7 @@
 import {render, RenderPosition} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
+import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
+import {SortType} from '../const.js';
 
 import EventsView from '../view/events.js';
 import SortView from '../view/sort.js';
@@ -12,6 +14,7 @@ export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
+    this._currentSortType = SortType.DAY;
 
     this._eventsComponent = new EventsView();
     this._sortComponent = new SortView();
@@ -24,8 +27,13 @@ export default class Trip {
   }
 
   init(tripPoints) {
+    // Метод для инициализации (начала работы) модуля
     this._tripPoints = tripPoints.slice();
-    // Метод для инициализации (начала работы) модуля,
+
+    // 1. В отличии от сортировки по любому параметру,
+    // исходный порядок можно сохранить только одним способом -
+    // сохранив исходный массив:
+    this._sourcedTripPoints = tripPoints.slice();
 
     render(this._tripContainer, this._eventsComponent, RenderPosition.BEFOREEND);
     render(this._eventsComponent, this._pointListComponent, RenderPosition.BEFOREEND);
@@ -33,11 +41,41 @@ export default class Trip {
     this._renderContentBlock();
   }
 
-  // eslint-disable-next-line no-unused-vars
+  _sortPoints(sortType) {
+    // 2. Этот исходный массив задач необходим,
+    // потому что для сортировки мы будем мутировать
+    // массив в свойстве _tripPoints
+    switch (sortType) {
+      case SortType.DAY:
+        this._tripPoints.sort(sortByDate);
+        break;
+      case SortType.TIME:
+        this._tripPoints.sort(sortByTime);
+        break;
+      case SortType.PRICE:
+        this._tripPoints.sort(sortByPrice);
+        break;
+      default:
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _tripPoints исходный массив
+        this._tripPoints = this._sourcedTripPoints.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
   _handleSortTypeChange(sortType) {
     // - Сортируем задачи
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+
     // - Очищаем список
+
     // - Рендерим список заново
+
   }
 
   _handleModeChange() {
@@ -46,6 +84,7 @@ export default class Trip {
 
   _handlePointChange(updatedPoint) {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
+    this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
     this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 

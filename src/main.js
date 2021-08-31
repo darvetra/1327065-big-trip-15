@@ -10,9 +10,9 @@ import {generatePoint} from './mock/point.js';
 
 import TripPresenter from './presenter/trip.js';
 
-const POINT_COUNT = 15;
+import {pointCount} from './const.js';
 
-const points = Array.from({ length: POINT_COUNT }, () => generatePoint());
+const points = Array.from({ length: pointCount }, () => generatePoint());
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');

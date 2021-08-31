@@ -20,6 +20,7 @@ export default class Trip {
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripPoints) {
@@ -30,6 +31,13 @@ export default class Trip {
     render(this._eventsComponent, this._pointListComponent, RenderPosition.BEFOREEND);
 
     this._renderContentBlock();
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  _handleSortTypeChange(sortType) {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
   }
 
   _handleModeChange() {
@@ -44,6 +52,7 @@ export default class Trip {
   _renderSort() {
     // Метод для рендеринга сортировки
     render(this._eventsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPoint(container, point) {

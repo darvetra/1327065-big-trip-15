@@ -73,9 +73,10 @@ export default class Trip {
     this._sortPoints(sortType);
 
     // - Очищаем список
+    this._clearPointList();
 
     // - Рендерим список заново
-
+    this._renderPointList(this._pointListComponent, this._tripPoints);
   }
 
   _handleModeChange() {

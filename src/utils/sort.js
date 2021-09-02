@@ -6,9 +6,13 @@ export const sortByDate = (pointA, pointB) => dayjs(pointB.dueDate).diff(dayjs(p
 export const sortByTime = (pointA, pointB) => calculateMinuteDiff(pointA, pointB);
 
 export const sortByPrice = (pointA, pointB) => {
-  if (pointA > pointB) {
-    return pointA;
+  if (pointA.basePrice > pointB.basePrice) {
+    return 1;
   }
 
-  return pointB;
+  if (pointA.basePrice < pointB.basePrice) {
+    return -1;
+  }
+
+  return 0;
 };

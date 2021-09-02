@@ -42,26 +42,26 @@ export default class Trip {
   }
 
   _sortPoints(sortType) {
+    this._currentSortType = sortType;
+
     // 2. Этот исходный массив задач необходим,
     // потому что для сортировки мы будем мутировать
     // массив в свойстве _tripPoints
     switch (sortType) {
       case SortType.DAY:
-        this._tripPoints.sort(sortByDate);
+        this._tripPoints = this._tripPoints.sort(sortByDate);
         break;
       case SortType.TIME:
-        this._tripPoints.sort(sortByTime);
+        this._tripPoints = this._tripPoints.sort(sortByTime);
         break;
       case SortType.PRICE:
-        this._tripPoints.sort(sortByPrice);
+        this._tripPoints = this._tripPoints.sort(sortByPrice);
         break;
       default:
         // 3. А когда пользователь захочет "вернуть всё, как было",
         // мы просто запишем в _tripPoints исходный массив
         this._tripPoints = this._sourcedTripPoints.slice();
     }
-
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {

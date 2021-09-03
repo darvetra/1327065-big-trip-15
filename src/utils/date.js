@@ -25,12 +25,12 @@ export const convertDateTime = (date) => date !== null
   : '';
 
 /**
- * Возвращает день и месяц в "человеческом формате" - 'D MMMM'
+ * Возвращает день и месяц в "человеческом формате" - 'D MMM'
  * @param date
  * @returns {string|string}
  */
 export const convertHumanDay = (date) => date !== null
-  ? dayjs(date).format('D MMMM')
+  ? dayjs(date).format('D MMM')
   : '';
 
 /**

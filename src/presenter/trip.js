@@ -131,7 +131,7 @@ export default class Trip {
       this._renderSort();
 
       // Отрисовывает точки маршрута  в списке
-      this._renderPointList(this._pointListComponent, this._tripPoints);
+      this._renderPointList(this._pointListComponent, this._tripPoints.sort(sortByDate));
     }
   }
 }

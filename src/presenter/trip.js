@@ -47,7 +47,7 @@ export default class Trip {
     // 2. Этот исходный массив задач необходим,
     // потому что для сортировки мы будем мутировать
     // массив в свойстве _tripPoints
-    switch (sortType) {
+    switch (this._currentSortType) {
       case SortType.DAY:
         this._tripPoints = this._tripPoints.sort(sortByDate);
         break;

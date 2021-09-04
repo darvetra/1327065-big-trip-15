@@ -258,6 +258,16 @@ export default class PointAddAndEdit extends AbstractView {
     return createAddAndEditPointTemplate(this._point, this._flag);
   }
 
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(this._point);

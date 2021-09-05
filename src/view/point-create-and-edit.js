@@ -293,4 +293,18 @@ export default class PointAddAndEdit extends AbstractView {
     this._callback.formRollup = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formSubmitHandler);
   }
+
+  _changeEventTypeValue(evt) {
+    if(evt.target.matches('.event__type-input')) {
+      const eventType = evt.target.value;
+
+      // eslint-disable-next-line no-console
+      return console.log(eventType);
+    }
+  }
+
+  setEventTypeValue(callback) {
+    this._callback.eventTypeValue = callback;
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeEventTypeValue);
+  }
 }

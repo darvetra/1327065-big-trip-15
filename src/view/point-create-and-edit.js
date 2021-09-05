@@ -1,6 +1,6 @@
 import {convertHumanDateAndTime} from '../utils/date.js';
 import AbstractView from './abstract.js';
-import {EVENT_TYPES} from '../const.js';
+import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {ucFirst} from '../utils/common.js';
 
 const createEventOfferTemplate = (offer = {}) => {
@@ -58,6 +58,10 @@ const createPointEditEventTypeTemplate = () => (
   </div>`).join('')
 );
 
+const createPointEditDestinationCityTemplate = () => (
+  DESTINATION_CITIES.map((destinationCity) => `<option value="${destinationCity}"></option>`).join('')
+);
+
 const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   const {
     basePrice,
@@ -88,7 +92,11 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   const destinationPictures = createDestinationPicturesList(destination.pictures);
   const pointPicturesContainer = isAddingForm ? createAddPointPicturesContainerTemplate(destinationPictures) : '';
 
+  // Тип транспорта
   const eventTypes = createPointEditEventTypeTemplate(EVENT_TYPES);
+
+  // Город назначения
+  const destinationCity = createPointEditDestinationCityTemplate(DESTINATION_CITIES);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -104,7 +112,7 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-                ${eventTypes}
+              ${eventTypes}
 
             </fieldset>
           </div>
@@ -116,9 +124,9 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+
+            ${destinationCity}
+
           </datalist>
         </div>
 

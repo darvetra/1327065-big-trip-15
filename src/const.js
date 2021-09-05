@@ -13,6 +13,16 @@ export const EVENT_TYPES = [
   'restaurant',
 ];
 
+export const DESTINATION_CITIES = [
+  'Amsterdam',
+  'Chamonix',
+  'Geneva',
+  'New York',
+  'Praha',
+  'San Francisco',
+  'Austin',
+];
+
 export const SortType = {
   DAY: 'day',
   TIME: 'time',

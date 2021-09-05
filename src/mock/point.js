@@ -1,6 +1,6 @@
 import {getRandomIntInclusive, getRandomInteger} from '../utils/common.js';
 import {generateDate} from '../utils/date.js';
-import {EVENT_TYPES} from '../const.js';
+import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 
 import {nanoid} from 'nanoid';
 
@@ -11,19 +11,9 @@ const MAXIMUM_NUMBER_OF_SENTENCES = 5;
  * @returns {string}
  */
 const generateCity = () => {
-  const cities = [
-    'Amsterdam',
-    'Chamonix',
-    'Geneva',
-    'New York',
-    'Praha',
-    'San Francisco',
-    'Miami',
-  ];
+  const randomIndex = getRandomInteger(0, DESTINATION_CITIES.length - 1);
 
-  const randomIndex = getRandomInteger(0, cities.length - 1);
-
-  return cities[randomIndex];
+  return DESTINATION_CITIES[randomIndex];
 };
 
 /**

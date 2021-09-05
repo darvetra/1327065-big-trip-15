@@ -3,6 +3,26 @@ import AbstractView from './abstract.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {ucFirst} from '../utils/common.js';
 
+const BLANK_POINT = {
+  basePrice: '',
+  dateFrom: '',
+  dateTo: '',
+  destination: {
+    description: '',
+    name: DESTINATION_CITIES[0],
+    pictures: '',
+  },
+  id: '',
+  isFavorite: false,
+  offers: [
+    {
+      title: '',
+      price: '',
+    },
+  ],
+  type: EVENT_TYPES[0],
+};
+
 const createEventOfferTemplate = (offer = {}) => {
   const {
     title,
@@ -217,7 +237,7 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
 };
 
 export default class PointAddAndEdit extends AbstractView {
-  constructor(point, flag) {
+  constructor(point = BLANK_POINT, flag) {
     super();
     this._point = point;
     this._flag = flag;

@@ -1,5 +1,6 @@
-import {getRandomIntInclusive, getRandomInteger} from '../utils/common';
-import {generateDate} from '../utils/date';
+import {getRandomIntInclusive, getRandomInteger} from '../utils/common.js';
+import {generateDate} from '../utils/date.js';
+import {EVENT_TYPES} from '../const.js';
 
 import {nanoid} from 'nanoid';
 
@@ -30,21 +31,9 @@ const generateCity = () => {
  * @returns {string}
  */
 const generatePointType = () => {
-  const pointType = [
-    'taxi',
-    'bus',
-    'train',
-    'ship',
-    'drive',
-    'flight',
-    'check-in',
-    'sightseeing',
-    'restaurant',
-  ];
+  const randomIndex = getRandomInteger(0, EVENT_TYPES.length - 1);
 
-  const randomIndex = getRandomInteger(0, pointType.length - 1);
-
-  return pointType[randomIndex];
+  return EVENT_TYPES[randomIndex];
 };
 
 /**

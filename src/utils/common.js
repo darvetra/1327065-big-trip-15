@@ -50,3 +50,14 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+/**
+ * Функция, возвращает строку с первой заглавной буквой
+ * @param str
+ * @returns {string|*}
+ */
+export const ucFirst = (str) => {
+  if (!str) {return str;}
+
+  return str[0].toUpperCase() + str.slice(1);
+};

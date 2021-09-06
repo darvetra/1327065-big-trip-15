@@ -245,6 +245,7 @@ export default class PointEdit extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -253,7 +254,7 @@ export default class PointEdit extends AbstractView {
     return createEditPointTemplate(this._data, this._flag);
   }
 
-  updateData(update) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
@@ -263,6 +264,10 @@ export default class PointEdit extends AbstractView {
       this._data,
       update,
     );
+
+    if (justDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
@@ -289,6 +294,10 @@ export default class PointEdit extends AbstractView {
     this.getElement()
       .querySelector('.event__type-group')
       .addEventListener('change', this._eventTypeChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this._destinationCityInputHandler);
   }
 
   _formSubmitHandler(evt) {
@@ -316,6 +325,16 @@ export default class PointEdit extends AbstractView {
     this.updateData({
       type: evt.target.value,
     });
+  }
+
+  _destinationCityInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      destination:
+        {
+          name: evt.target.value,
+        },
+    }, true);
   }
 
   static parseEventToData(event) {

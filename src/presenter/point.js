@@ -1,7 +1,7 @@
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 
 import PointView from '../view/point.js';
-import PointEditView from '../view/point-create-and-edit.js';
+import PointEditView from '../view/point-edit.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',

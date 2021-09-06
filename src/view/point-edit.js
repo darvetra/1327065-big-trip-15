@@ -244,6 +244,7 @@ export default class PointEdit extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
 
@@ -263,7 +264,8 @@ export default class PointEdit extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormRollupHandler(this._callback.formSubmit);
+    this.setFormRollupHandler(this._callback.formReset);
+    this.setFormResetHandler(this._callback.formReset);
   }
 
   _setInnerHandlers() {
@@ -281,6 +283,11 @@ export default class PointEdit extends SmartView {
     this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
@@ -288,12 +295,25 @@ export default class PointEdit extends SmartView {
 
   _formRollupHandler(evt) {
     evt.preventDefault();
-    this._callback.formRollup();
+    this._callback.formReset();
   }
 
   setFormRollupHandler(callback) {
-    this._callback.formRollup = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formSubmitHandler);
+    if(this._flag === true) {
+      return;
+    }
+
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formResetHandler);
+  }
+
+  setFormResetHandler(callback) {
+    if(this._flag === false) {
+      return;
+    }
+
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formResetHandler);
   }
 
   _eventTypeChangeHandler(evt) {

@@ -34,7 +34,7 @@ export default class Point {
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new PointEditView(point, false);
 
-    this._pointComponent.setEditClickHandler(this._handleEditClick);1
+    this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormRollupHandler(this._handleFormSubmit);

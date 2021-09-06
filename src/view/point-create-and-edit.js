@@ -82,7 +82,7 @@ const createPointEditDestinationCityTemplate = () => (
   DESTINATION_CITIES.map((destinationCity) => `<option value="${destinationCity}"></option>`).join('')
 );
 
-const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
+const createEditPointTemplate = (data = {}, isAddingForm) => {
   const {
     basePrice,
     dateFrom,
@@ -90,7 +90,7 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
     destination,
     offers,
     type,
-  } = pointItem;
+  } = data;
 
   // Город
   const city = destination.name;
@@ -236,18 +236,21 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   </li>`;
 };
 
-export default class PointAddAndEdit extends AbstractView {
+export default class PointEdit extends AbstractView {
   constructor(point = BLANK_POINT, flag) {
     super();
-    this._point = point;
+    this._data = PointEdit.parseEventToData(point);
     this._flag = flag;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createAddAndEditPointTemplate(this._point, this._flag);
+    return createEditPointTemplate(this._data, this._flag);
   }
 
   updateData(update) {
@@ -272,11 +275,25 @@ export default class PointAddAndEdit extends AbstractView {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormRollupHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._eventTypeChangeHandler);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(PointEdit.parseDataToEvent(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -294,17 +311,23 @@ export default class PointAddAndEdit extends AbstractView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formSubmitHandler);
   }
 
-  _changeEventTypeValue(evt) {
-    if(evt.target.matches('.event__type-input')) {
-      const eventType = evt.target.value;
-
-      // eslint-disable-next-line no-console
-      return console.log(eventType);
-    }
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
   }
 
-  setEventTypeValue(callback) {
-    this._callback.eventTypeValue = callback;
-    this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeEventTypeValue);
+  static parseEventToData(event) {
+    return Object.assign(
+      {},
+      event,
+    );
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    return data;
   }
 }

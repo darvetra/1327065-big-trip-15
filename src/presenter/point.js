@@ -1,7 +1,7 @@
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 
 import PointView from '../view/point.js';
-import PointAddAndEditView from '../view/point-create-and-edit.js';
+import PointEditView from '../view/point-create-and-edit.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -32,13 +32,12 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointAddAndEditView(point, 0);
+    this._pointEditComponent = new PointEditView(point, 0);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormRollupHandler(this._handleFormSubmit);
-    this._pointEditComponent.setEventTypeValue(this._handleFormSubmit);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent, RenderPosition.BEFOREEND);

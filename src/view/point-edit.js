@@ -239,7 +239,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
 export default class PointEdit extends SmartView {
   constructor(point = BLANK_POINT, flag) {
     super();
-    this._data = PointEdit.parseEventToData(point);
+    this._data = PointEdit.parsePointToData(point);
     this._flag = flag;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -248,6 +248,12 @@ export default class PointEdit extends SmartView {
     this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
 
     this._setInnerHandlers();
+  }
+
+  reset(point) {
+    this.updateData(
+      PointEdit.parsePointToData(point),
+    );
   }
 
   getTemplate() {
@@ -272,7 +278,7 @@ export default class PointEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(PointEdit.parseDataToEvent(this._data));
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -307,14 +313,14 @@ export default class PointEdit extends SmartView {
     }, true);
   }
 
-  static parseEventToData(event) {
+  static parsePointToData(point) {
     return Object.assign(
       {},
-      event,
+      point,
     );
   }
 
-  static parseDataToEvent(data) {
+  static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
     return data;

@@ -1,6 +1,6 @@
-import {convertHumanDateAndTime} from '../utils/date.js';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
+import {convertHumanDateAndTime} from '../utils/date.js';
 import {ucFirst} from '../utils/common.js';
 
 const BLANK_POINT = {
@@ -236,7 +236,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
   </li>`;
 };
 
-export default class PointEdit extends AbstractView {
+export default class PointEdit extends SmartView {
   constructor(point = BLANK_POINT, flag) {
     super();
     this._data = PointEdit.parseEventToData(point);
@@ -252,36 +252,6 @@ export default class PointEdit extends AbstractView {
 
   getTemplate() {
     return createEditPointTemplate(this._data, this._flag);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {

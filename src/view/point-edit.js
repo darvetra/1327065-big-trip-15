@@ -309,7 +309,7 @@ export default class PointEdit extends SmartView {
   }
 
   setFormRollupHandler(callback) {
-    if(this._flag === true) {
+    if(this._flag) {
       return;
     }
 

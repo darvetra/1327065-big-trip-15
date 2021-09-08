@@ -236,11 +236,11 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, destination, flag) {
+  constructor(point = BLANK_POINT, destination, isAddingForm) {
     super();
     this._data = PointEdit.parsePointToData(point);
     this._destination = destination;
-    this._flag = flag;
+    this._isAddingForm = isAddingForm;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
@@ -259,7 +259,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._data, this._flag);
+    return createEditPointTemplate(this._data, this._isAddingForm);
   }
 
   restoreHandlers() {
@@ -294,7 +294,7 @@ export default class PointEdit extends SmartView {
   }
 
   setFormResetHandler(callback) {
-    if(this._flag === false) {
+    if(this._isAddingForm === false) {
       return;
     }
 
@@ -308,7 +308,7 @@ export default class PointEdit extends SmartView {
   }
 
   setFormRollupHandler(callback) {
-    if(this._flag) {
+    if(this._isAddingForm) {
       return;
     }
 

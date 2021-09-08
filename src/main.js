@@ -11,7 +11,7 @@ import FilterView from './view/filter.js';
 
 import TripPresenter from './presenter/trip.js';
 
-const destinationCities = Array.from( DESTINATION_CITIES, (item) => generateDestination(item));
+const destinationCities = DESTINATION_CITIES.map((item) => generateDestination(item));
 const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
 
 const sitePageHeaderElement = document.querySelector('.page-header');

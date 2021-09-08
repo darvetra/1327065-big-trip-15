@@ -1,20 +1,10 @@
 import {getRandomIntInclusive, getRandomInteger} from '../utils/common.js';
 import {generateDate} from '../utils/date.js';
-import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
+import {EVENT_TYPES} from '../const.js';
 
 import {nanoid} from 'nanoid';
 
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
-
-/**
- * Генерирует моковые данные - название города
- * @returns {string}
- */
-const generateCity = () => {
-  const randomIndex = getRandomInteger(0, DESTINATION_CITIES.length - 1);
-
-  return DESTINATION_CITIES[randomIndex];
-};
 
 /**
  * Генерирует моковые данные - тип точки маршрута
@@ -130,23 +120,34 @@ const generateOffers = () => {
 };
 
 /**
- * Генерирует точку маршрута (Место назначения)
+ * Генерирует точку маршрута (Место назначения) на основе списка городов
  * @returns {{name: string, description: string, pictures: [{src: string, description: string}]}}
  */
-const generateDestination = () => ({
+export const generateDestination = (destinationCity) => ({
   'description': generateDescription(),
-  'name': generateCity(),
+  'name': destinationCity,
   'pictures': generatePictures(),
 });
 
-export const generatePoint = () => ({
-  'basePrice': getRandomInteger(1, 300),
-  'dateFrom': generateDate(),
-  'dateTo': generateDate(),
-  'destination': generateDestination(),
-  'id': nanoid(),
-  'isFavorite': Boolean(getRandomInteger(0, 1)),
-  'offers': generateOffers(),
-  'type': generatePointType(),
-});
+/**
+ * Генерирует точку маршрута
+ * @returns {{offers: *[], dateTo: Date, destination: {name: string, description: string, pictures: {src: string, description: string}[]}, id: string, dateFrom: Date, type: string, basePrice: number, isFavorite: boolean}}
+ */
+export const generatePoint = (destinationCities) => {
+  const generateCity = (cityArray) => {
+    const randomIndex = getRandomInteger(0, cityArray.length - 1);
+    return cityArray[randomIndex];
+  };
+
+  return {
+    'basePrice': getRandomInteger(1, 300),
+    'dateFrom': generateDate(),
+    'dateTo': generateDate(),
+    'destination': generateCity(destinationCities),
+    'id': nanoid(),
+    'isFavorite': Boolean(getRandomInteger(0, 1)),
+    'offers': generateOffers(),
+    'type': generatePointType(),
+  };
+};
 

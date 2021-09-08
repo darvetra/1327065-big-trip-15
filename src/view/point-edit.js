@@ -10,7 +10,7 @@ const BLANK_POINT = {
   destination: {
     description: '',
     name: DESTINATION_CITIES[0],
-    pictures: '',
+    pictures: [],
   },
   id: '',
   isFavorite: false,
@@ -237,9 +237,10 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, flag) {
+  constructor(point = BLANK_POINT, destination, flag) {
     super();
     this._data = PointEdit.parsePointToData(point);
+    this._destination = destination;
     this._flag = flag;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -247,6 +248,7 @@ export default class PointEdit extends SmartView {
     this._formResetHandler = this._formResetHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
+    this._inputDestinationValidateHandler = this._inputDestinationValidateHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -264,8 +266,8 @@ export default class PointEdit extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormRollupHandler(this._callback.formReset);
     this.setFormResetHandler(this._callback.formReset);
+    this.setFormRollupHandler(this._callback.formReset);
   }
 
   _setInnerHandlers() {
@@ -276,16 +278,10 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('input', this._destinationCityInputHandler);
-  }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
-  }
-
-  _formResetHandler(evt) {
-    evt.preventDefault();
-    this._callback.formReset();
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this._inputDestinationValidateHandler);
   }
 
   setFormSubmitHandler(callback) {
@@ -293,7 +289,21 @@ export default class PointEdit extends SmartView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  _formRollupHandler(evt) {
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setFormResetHandler(callback) {
+    if(this._flag === false) {
+      return;
+    }
+
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formResetHandler);
+  }
+
+  _formResetHandler(evt) {
     evt.preventDefault();
     this._callback.formReset();
   }
@@ -307,13 +317,42 @@ export default class PointEdit extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formResetHandler);
   }
 
-  setFormResetHandler(callback) {
-    if(this._flag === false) {
-      return;
+  _formRollupHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
+  _inputDestinationValidateHandler(evt) {
+    const inputDestination = this.getElement().querySelector('.event__input--destination');
+    const targetCity = this._destination.find((item) => item.name === evt.target.value);
+    const redBorder = 'red auto 1px';
+
+    if (evt.target.value === '') {
+      inputDestination.setCustomValidity('Поле не может быть пустым');
+      inputDestination.style.outline = redBorder;
+    } else if (targetCity === undefined) {
+      inputDestination.setCustomValidity('Выберите город из предложенного списка');
+      inputDestination.style.outline = redBorder;
+    } else {
+      inputDestination.setCustomValidity('');
+      inputDestination.style.outline = '';
     }
 
-    this._callback.formReset = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formResetHandler);
+    inputDestination.reportValidity();
+  }
+
+  _destinationCityInputHandler(evt) {
+    evt.preventDefault();
+    const targetCity = this._destination.find((item) => item.name === evt.target.value);
+
+    this.updateData({
+      destination:
+        {
+          description: targetCity.description,
+          name: evt.target.value,
+          pictures: targetCity.pictures,
+        },
+    }, true);
   }
 
   _eventTypeChangeHandler(evt) {
@@ -321,16 +360,6 @@ export default class PointEdit extends SmartView {
     this.updateData({
       type: evt.target.value,
     });
-  }
-
-  _destinationCityInputHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      destination:
-        {
-          name: evt.target.value,
-        },
-    }, true);
   }
 
   static parsePointToData(point) {

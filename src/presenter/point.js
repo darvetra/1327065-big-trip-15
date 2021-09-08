@@ -25,14 +25,15 @@ export default class Point {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(point) {
+  init(point, destination) {
     this._point = point;
+    this._destination = destination;
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointEditView(point, false);
+    this._pointComponent = new PointView(this._point);
+    this._pointEditComponent = new PointEditView(this._point, this._destination, true);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

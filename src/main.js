@@ -1,18 +1,18 @@
+import {DESTINATION_CITIES, pointCount} from './const.js';
 import {render, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
+
+import {generateDestination, generatePoint} from './mock/point.js';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 
-import {generatePoint} from './mock/point.js';
-
 import TripPresenter from './presenter/trip.js';
 
-import {pointCount} from './const.js';
-
-const points = Array.from({ length: pointCount }, () => generatePoint());
+const destinationCities = Array.from( DESTINATION_CITIES, (item) => generateDestination(item));
+const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
@@ -41,5 +41,5 @@ const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-co
 render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
 
 // Основная часть
-tripPresenter.init(points);
+tripPresenter.init(points, destinationCities);
 

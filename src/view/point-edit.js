@@ -1,7 +1,6 @@
 import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
-import {ucFirst} from '../utils/common.js';
 
 const BLANK_POINT = {
   basePrice: '',
@@ -74,7 +73,7 @@ const createAddPointPicturesContainerTemplate = (picturesArray) => (
 const createPointEditEventTypeTemplate = () => (
   EVENT_TYPES.map((eventType) => `<div class="event__type-item">
     <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
-    <label class="event__type-label event__type-label--${eventType}" for="event-type-${eventType}-1">${ucFirst(eventType)}</label>
+    <label class="event__type-label event__type-label--${eventType}" for="event-type-${eventType}-1" style="text-transform: capitalize">${eventType}</label>
   </div>`).join('')
 );
 

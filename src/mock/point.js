@@ -1,50 +1,19 @@
-import {getRandomIntInclusive, getRandomInteger} from '../utils/common';
-import {generateDate} from '../utils/date';
+import {getRandomIntInclusive, getRandomInteger} from '../utils/common.js';
+import {generateDate} from '../utils/date.js';
+import {EVENT_TYPES} from '../const.js';
 
 import {nanoid} from 'nanoid';
 
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 
 /**
- * Генерирует моковые данные - название города
- * @returns {string}
- */
-const generateCity = () => {
-  const cities = [
-    'Amsterdam',
-    'Chamonix',
-    'Geneva',
-    'New York',
-    'Praha',
-    'San Francisco',
-    'Miami',
-  ];
-
-  const randomIndex = getRandomInteger(0, cities.length - 1);
-
-  return cities[randomIndex];
-};
-
-/**
  * Генерирует моковые данные - тип точки маршрута
  * @returns {string}
  */
 const generatePointType = () => {
-  const pointType = [
-    'taxi',
-    'bus',
-    'train',
-    'ship',
-    'drive',
-    'flight',
-    'check-in',
-    'sightseeing',
-    'restaurant',
-  ];
+  const randomIndex = getRandomInteger(0, EVENT_TYPES.length - 1);
 
-  const randomIndex = getRandomInteger(0, pointType.length - 1);
-
-  return pointType[randomIndex];
+  return EVENT_TYPES[randomIndex];
 };
 
 /**
@@ -151,23 +120,34 @@ const generateOffers = () => {
 };
 
 /**
- * Генерирует точку маршрута (Место назначения)
+ * Генерирует точку маршрута (Место назначения) на основе списка городов
  * @returns {{name: string, description: string, pictures: [{src: string, description: string}]}}
  */
-const generateDestination = () => ({
+export const generateDestination = (destinationCity) => ({
   'description': generateDescription(),
-  'name': generateCity(),
+  'name': destinationCity,
   'pictures': generatePictures(),
 });
 
-export const generatePoint = () => ({
-  'basePrice': getRandomInteger(1, 300),
-  'dateFrom': generateDate(),
-  'dateTo': generateDate(),
-  'destination': generateDestination(),
-  'id': nanoid(),
-  'isFavorite': Boolean(getRandomInteger(0, 1)),
-  'offers': generateOffers(),
-  'type': generatePointType(),
-});
+/**
+ * Генерирует точку маршрута
+ * @returns {{offers: *[], dateTo: Date, destination: {name: string, description: string, pictures: {src: string, description: string}[]}, id: string, dateFrom: Date, type: string, basePrice: number, isFavorite: boolean}}
+ */
+export const generatePoint = (destinationCities) => {
+  const generateCity = (cityArray) => {
+    const randomIndex = getRandomInteger(0, cityArray.length - 1);
+    return cityArray[randomIndex];
+  };
+
+  return {
+    'basePrice': getRandomInteger(1, 300),
+    'dateFrom': generateDate(),
+    'dateTo': generateDate(),
+    'destination': generateCity(destinationCities),
+    'id': nanoid(),
+    'isFavorite': Boolean(getRandomInteger(0, 1)),
+    'offers': generateOffers(),
+    'type': generatePointType(),
+  };
+};
 

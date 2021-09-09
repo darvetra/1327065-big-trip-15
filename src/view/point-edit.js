@@ -1,5 +1,26 @@
-import {convertHumanDateAndTime} from '../utils/date';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
+import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
+import {convertHumanDateAndTime} from '../utils/date.js';
+
+const BLANK_POINT = {
+  basePrice: '',
+  dateFrom: '',
+  dateTo: '',
+  destination: {
+    description: '',
+    name: DESTINATION_CITIES[0],
+    pictures: [],
+  },
+  id: '',
+  isFavorite: false,
+  offers: [
+    {
+      title: '',
+      price: '',
+    },
+  ],
+  type: EVENT_TYPES[0],
+};
 
 const createEventOfferTemplate = (offer = {}) => {
   const {
@@ -49,7 +70,18 @@ const createAddPointPicturesContainerTemplate = (picturesArray) => (
   </div>`
 );
 
-const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
+const createPointEditEventTypeTemplate = () => (
+  EVENT_TYPES.map((eventType) => `<div class="event__type-item">
+    <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
+    <label class="event__type-label event__type-label--${eventType}" for="event-type-${eventType}-1" style="text-transform: capitalize">${eventType}</label>
+  </div>`).join('')
+);
+
+const createPointEditDestinationCityTemplate = () => (
+  DESTINATION_CITIES.map((destinationCity) => `<option value="${destinationCity}"></option>`).join('')
+);
+
+const createEditPointTemplate = (data = {}, isAddingForm) => {
   const {
     basePrice,
     dateFrom,
@@ -57,7 +89,7 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
     destination,
     offers,
     type,
-  } = pointItem;
+  } = data;
 
   // Город
   const city = destination.name;
@@ -79,6 +111,12 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   const destinationPictures = createDestinationPicturesList(destination.pictures);
   const pointPicturesContainer = isAddingForm ? createAddPointPicturesContainerTemplate(destinationPictures) : '';
 
+  // Тип транспорта
+  const eventTypes = createPointEditEventTypeTemplate(EVENT_TYPES);
+
+  // Город назначения
+  const destinationCity = createPointEditDestinationCityTemplate(DESTINATION_CITIES);
+
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -93,55 +131,8 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
+              ${eventTypes}
 
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-              </div>
             </fieldset>
           </div>
         </div>
@@ -152,9 +143,9 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+
+            ${destinationCity}
+
           </datalist>
         </div>
 
@@ -244,23 +235,52 @@ const createAddAndEditPointTemplate = (pointItem = {}, isAddingForm) => {
   </li>`;
 };
 
-export default class PointAddAndEdit extends AbstractView {
-  constructor(point, flag) {
+export default class PointEdit extends SmartView {
+  constructor(point = BLANK_POINT, destination, isAddingForm) {
     super();
-    this._point = point;
-    this._flag = flag;
+    this._data = PointEdit.parsePointToData(point);
+    this._destination = destination;
+    this._isAddingForm = isAddingForm;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
+    this._inputDestinationValidateHandler = this._inputDestinationValidateHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(point) {
+    this.updateData(
+      PointEdit.parsePointToData(point),
+    );
   }
 
   getTemplate() {
-    return createAddAndEditPointTemplate(this._point, this._flag);
+    return createEditPointTemplate(this._data, this._isAddingForm);
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(this._point);
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+    this.setFormRollupHandler(this._callback.formReset);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._eventTypeChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this._destinationCityInputHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this._inputDestinationValidateHandler);
   }
 
   setFormSubmitHandler(callback) {
@@ -268,13 +288,89 @@ export default class PointAddAndEdit extends AbstractView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  _formRollupHandler(evt) {
+  _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formRollup();
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setFormResetHandler(callback) {
+    if(this._isAddingForm === false) {
+      return;
+    }
+
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formResetHandler);
+  }
+
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
   }
 
   setFormRollupHandler(callback) {
-    this._callback.formRollup = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formSubmitHandler);
+    if(this._isAddingForm) {
+      return;
+    }
+
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._formResetHandler);
+  }
+
+  _formRollupHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
+  _inputDestinationValidateHandler(evt) {
+    const inputDestination = this.getElement().querySelector('.event__input--destination');
+    const targetCity = this._destination.find((item) => item.name === evt.target.value);
+    const redBorder = 'red auto 1px';
+
+    if (evt.target.value === '') {
+      inputDestination.setCustomValidity('Поле не может быть пустым');
+      inputDestination.style.outline = redBorder;
+    } else if (targetCity === undefined) {
+      inputDestination.setCustomValidity('Выберите город из предложенного списка');
+      inputDestination.style.outline = redBorder;
+    } else {
+      inputDestination.setCustomValidity('');
+      inputDestination.style.outline = '';
+    }
+
+    inputDestination.reportValidity();
+  }
+
+  _destinationCityInputHandler(evt) {
+    evt.preventDefault();
+    const targetCity = this._destination.find((item) => item.name === evt.target.value);
+
+    this.updateData({
+      destination:
+        {
+          description: targetCity.description,
+          name: evt.target.value,
+          pictures: targetCity.pictures,
+        },
+    }, true);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    return data;
   }
 }

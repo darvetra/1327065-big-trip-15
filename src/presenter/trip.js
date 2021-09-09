@@ -26,9 +26,10 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripPoints) {
+  init(tripPoints, destinationCities) {
     // Метод для инициализации (начала работы) модуля
     this._tripPoints = tripPoints.slice();
+    this._destinationCities = destinationCities.slice();
 
     // 1. В отличии от сортировки по любому параметру,
     // исходный порядок можно сохранить только одним способом -
@@ -86,7 +87,7 @@ export default class Trip {
   _handlePointChange(updatedPoint) {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
     this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
-    this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
+    this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);
   }
 
   _renderSort() {
@@ -99,7 +100,7 @@ export default class Trip {
     // Метод, с логикой по созданию и рендерингу точки маршрута
 
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange, this._handleModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this._destinationCities);
     this._pointPresenter.set(point.id, pointPresenter);
   }
 

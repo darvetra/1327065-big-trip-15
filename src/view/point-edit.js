@@ -2,6 +2,11 @@ import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
 
+/*eslint-disable no-unused-vars*/
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
 const BLANK_POINT = {
   basePrice: '',
   dateFrom: '',

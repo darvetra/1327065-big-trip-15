@@ -2,7 +2,6 @@ import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
 
-/*eslint-disable no-unused-vars*/
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -246,10 +245,12 @@ export default class PointEdit extends SmartView {
     this._data = PointEdit.parsePointToData(point);
     this._destination = destination;
     this._isAddingForm = isAddingForm;
+    this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
     this._inputDestinationValidateHandler = this._inputDestinationValidateHandler.bind(this);
@@ -274,6 +275,24 @@ export default class PointEdit extends SmartView {
     this.setFormRollupHandler(this._callback.formReset);
   }
 
+  _setDatepicker() {
+    if (this._datepicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+      this.getElement().querySelector('.event__input--time'),
+      {
+        dateFormat: 'j F',
+        defaultDate: this._data.dateFrom,
+        onChange: this._dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
+      },
+    );
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.event__type-group')
@@ -286,6 +305,12 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('input', this._inputDestinationValidateHandler);
+  }
+
+  _dateFromChangeHandler([userDate]) {
+    this.updateData({
+      dateFrom: userDate,
+    });
   }
 
   setFormSubmitHandler(callback) {

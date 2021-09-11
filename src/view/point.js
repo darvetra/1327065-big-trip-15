@@ -1,4 +1,4 @@
-import {calculateMinuteDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils/date';
+import {calculateTimeDiff, convertDateTime, convertHumanDay, convertHumanTime} from '../utils/date';
 import AbstractView from './abstract.js';
 
 const createEventOfferTemplate = (offer = {}) => {
@@ -33,7 +33,7 @@ const createPointItemTemplate = (pointItem = {}) => {
   const dateToDateTime = convertDateTime(dateTo);
   const timeFromView = convertHumanTime(dateFrom);
   const timeToView = convertHumanTime(dateTo);
-  const minuteDiff = calculateMinuteDiff(dateFrom, dateTo);
+  const timeDiff = calculateTimeDiff(dateFrom, dateTo);
 
   // Город
   const city = destination.name;
@@ -59,7 +59,7 @@ const createPointItemTemplate = (pointItem = {}) => {
           &mdash;
           <time class="event__end-time" datetime="${dateToDateTime}">${timeToView}</time>
         </p>
-        <p class="event__duration">${minuteDiff}M</p>
+        <p class="event__duration">${timeDiff}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>

@@ -245,7 +245,7 @@ export default class PointEdit extends SmartView {
     this._data = PointEdit.parsePointToData(point);
     this._destination = destination;
     this._isAddingForm = isAddingForm;
-    this._datepicker = null;
+    this._datepickerStartTime = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
@@ -278,18 +278,19 @@ export default class PointEdit extends SmartView {
   }
 
   _setDatepicker() {
-    if (this._datepicker) {
+    if (this._datepickerStartTime) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
       // которые создает flatpickr при инициализации
-      this._datepicker.destroy();
-      this._datepicker = null;
+      this._datepickerStartTime.destroy();
+      this._datepickerStartTime = null;
     }
 
-    this._datepicker = flatpickr(
-      this.getElement().querySelector('.event__input--time'),
+    this._datepickerStartTime = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
         time_24hr: true,
         defaultDate: this._data.dateFrom,
         onChange: this._dateFromChangeHandler, // На событие flatpickr передаём наш колбэк

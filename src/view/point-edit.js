@@ -288,7 +288,9 @@ export default class PointEdit extends SmartView {
     this._datepicker = flatpickr(
       this.getElement().querySelector('.event__input--time'),
       {
+        enableTime: true,
         dateFormat: 'd/m/y H:i',
+        time_24hr: true,
         defaultDate: this._data.dateFrom,
         onChange: this._dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
       },

@@ -256,6 +256,7 @@ export default class PointEdit extends SmartView {
     this._inputDestinationValidateHandler = this._inputDestinationValidateHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   reset(point) {
@@ -270,6 +271,7 @@ export default class PointEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setFormRollupHandler(this._callback.formReset);

@@ -11,7 +11,8 @@ import NoPointView from '../view/no-point.js';
 import PointPresenter from './point.js';
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, tripModel) {
+    this._tripModel = tripModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
@@ -40,6 +41,10 @@ export default class Trip {
     render(this._eventsComponent, this._pointListComponent, RenderPosition.BEFOREEND);
 
     this._renderContentBlock();
+  }
+
+  _getPoints() {
+    return this._tripModel.getPoints();
   }
 
   _sortPoints(sortType) {

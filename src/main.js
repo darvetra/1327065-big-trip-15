@@ -3,6 +3,7 @@ import {render, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
 import {generateDestination, generatePoint} from './mock/point.js';
+import TripModel from './model/points.js';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
@@ -14,11 +15,14 @@ import TripPresenter from './presenter/trip.js';
 const destinationCities = DESTINATION_CITIES.map((item) => generateDestination(item));
 const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
 
+const tripModel = new TripModel();
+tripModel.setPoints(points);
+
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
 const siteBodyContainerElement = sitePageMainElement.querySelector('.page-body__container');
 
-const tripPresenter = new TripPresenter(siteBodyContainerElement);
+const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel);
 
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)

@@ -68,7 +68,6 @@ export const calculateMinuteDiff = (reduced, deducted) => dayjs(deducted).diff(d
  */
 export const  calculateTimeDiff = (reduced, deducted) => {
   const diff = dayjs(deducted).diff(dayjs(reduced), 'minute');
-  // const diff = 4320 + 180 + 59; // 4320 минут = 72 часа = 3 дня
 
   let timeDiff = '';
   const days = Math.floor(diff/(60*24));

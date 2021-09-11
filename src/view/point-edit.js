@@ -3,7 +3,6 @@ import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
 
 import flatpickr from 'flatpickr';
-
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
@@ -297,6 +296,7 @@ export default class PointEdit extends SmartView {
     this._datepickerStartTime = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
+        locale: {firstDayOfWeek: 1},
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         // eslint-disable-next-line camelcase
@@ -310,6 +310,7 @@ export default class PointEdit extends SmartView {
       this.getElement().querySelector('#event-end-time-1'),
       {
         minDate: this._datepickerStartTime.selectedDates[0],
+        locale: {firstDayOfWeek: 1},
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         // eslint-disable-next-line camelcase

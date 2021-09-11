@@ -246,11 +246,13 @@ export default class PointEdit extends SmartView {
     this._destination = destination;
     this._isAddingForm = isAddingForm;
     this._datepickerStartTime = null;
+    this._datepickerEndTime = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
     this._inputDestinationValidateHandler = this._inputDestinationValidateHandler.bind(this);
@@ -285,6 +287,13 @@ export default class PointEdit extends SmartView {
       this._datepickerStartTime = null;
     }
 
+    if (this._datepickerEndTime) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerEndTime.destroy();
+      this._datepickerEndTime = null;
+    }
+
     this._datepickerStartTime = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
@@ -294,6 +303,19 @@ export default class PointEdit extends SmartView {
         time_24hr: true,
         defaultDate: this._data.dateFrom,
         onChange: this._dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
+      },
+    );
+
+    this._datepickerEndTime = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        minDate: this._datepickerStartTime.selectedDates[0],
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._data.dateTo,
+        onChange: this._dateToChangeHandler, // На событие flatpickr передаём наш колбэк
       },
     );
   }
@@ -315,6 +337,12 @@ export default class PointEdit extends SmartView {
   _dateFromChangeHandler([userDate]) {
     this.updateData({
       dateFrom: userDate,
+    });
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: userDate,
     });
   }
 

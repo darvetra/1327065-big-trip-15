@@ -60,6 +60,37 @@ export const convertHumanTime = (date) => date !== null
 export const calculateMinuteDiff = (reduced, deducted) => dayjs(deducted).diff(dayjs(reduced), 'minute');
 
 /**
+ * Рассчитывает разницу между датами в минутах
+ * Но выводит разницу в человеческом формате, в зависимости от значения этой самой разницы
+ * @param reduced
+ * @param deducted
+ * @returns {string}
+ */
+export const  calculateTimeDiff = (reduced, deducted) => {
+  const diff = dayjs(deducted).diff(dayjs(reduced), 'minute');
+
+  let timeDiff = '';
+  const days = Math.floor(diff/(60*24));
+  let hours =  Math.floor(diff/60);
+  const minutes = diff%60;
+
+  if(diff < 60){
+    timeDiff = `${diff}M`;
+  }
+
+  if(diff >= 60 && diff < (60*24)){
+    timeDiff = `${hours}H ${minutes}M`;
+  }
+
+  if(diff >= (60*24)){
+    hours = Math.floor(( diff - (days * 60 * 24) )/60);
+    timeDiff = `${days}D ${hours}H ${minutes}M`;
+  }
+
+  return timeDiff;
+};
+
+/**
  * На основе массива данных высчитывает информацию о поездке
  * @param routePoints
  * @returns {{generalEndDate: dayjs.Dayjs, generalStartDate: dayjs.Dayjs}}

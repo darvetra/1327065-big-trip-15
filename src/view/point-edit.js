@@ -2,6 +2,9 @@ import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
 
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
 const BLANK_POINT = {
   basePrice: '',
   dateFrom: '',
@@ -241,15 +244,20 @@ export default class PointEdit extends SmartView {
     this._data = PointEdit.parsePointToData(point);
     this._destination = destination;
     this._isAddingForm = isAddingForm;
+    this._datepickerStartTime = null;
+    this._datepickerEndTime = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationCityInputHandler = this._destinationCityInputHandler.bind(this);
     this._inputDestinationValidateHandler = this._inputDestinationValidateHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   reset(point) {
@@ -264,9 +272,53 @@ export default class PointEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setFormRollupHandler(this._callback.formReset);
+  }
+
+  _setDatepicker() {
+    if (this._datepickerStartTime) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerStartTime.destroy();
+      this._datepickerStartTime = null;
+    }
+
+    if (this._datepickerEndTime) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerEndTime.destroy();
+      this._datepickerEndTime = null;
+    }
+
+    this._datepickerStartTime = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
+        locale: {firstDayOfWeek: 1},
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._data.dateFrom,
+        onChange: this._dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
+      },
+    );
+
+    this._datepickerEndTime = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        minDate: this._datepickerStartTime.selectedDates[0],
+        locale: {firstDayOfWeek: 1},
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._data.dateTo,
+        onChange: this._dateToChangeHandler, // На событие flatpickr передаём наш колбэк
+      },
+    );
   }
 
   _setInnerHandlers() {
@@ -281,6 +333,18 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('input', this._inputDestinationValidateHandler);
+  }
+
+  _dateFromChangeHandler([userDate]) {
+    this.updateData({
+      dateFrom: userDate,
+    });
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: userDate,
+    });
   }
 
   setFormSubmitHandler(callback) {

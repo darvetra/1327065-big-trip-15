@@ -1,6 +1,6 @@
 import {render, RenderPosition} from '../utils/render.js';
 import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
-import {SortType} from '../const.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 
 import EventsView from '../view/events.js';
 import SortView from '../view/sort.js';
@@ -10,8 +10,8 @@ import NoPointView from '../view/no-point.js';
 import PointPresenter from './point.js';
 
 export default class Trip {
-  constructor(tripContainer, tripModel) {
-    this._tripModel = tripModel;
+  constructor(tripContainer, pointsModel) {
+    this._pointsModel = pointsModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
@@ -26,7 +26,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._tripModel.addObserver(this._handleModelEvent);
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -39,14 +39,14 @@ export default class Trip {
   _getPoints() {
     switch (this._currentSortType) {
       case SortType.DAY:
-        return this._tripModel.getPoints().slice().sort(sortByDate);
+        return this._pointsModel.getPoints().slice().sort(sortByDate);
       case SortType.TIME:
-        return this._tripModel.getPoints().slice().sort(sortByTime);
+        return this._pointsModel.getPoints().slice().sort(sortByTime);
       case SortType.PRICE:
-        return this._tripModel.getPoints().slice().sort(sortByPrice);
+        return this._pointsModel.getPoints().slice().sort(sortByPrice);
     }
 
-    return this._tripModel.getPoints();
+    return this._pointsModel.getPoints();
   }
 
   _handleSortTypeChange(sortType) {
@@ -76,19 +76,41 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     // eslint-disable-next-line no-console
     console.log(actionType, updateType, update);
+
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
     // eslint-disable-next-line no-console
     console.log(updateType, data);
+
     // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this._pointPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
 

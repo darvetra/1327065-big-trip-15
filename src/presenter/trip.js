@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../utils/render.js';
+import {render, remove, RenderPosition} from '../utils/render.js';
 import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
 
@@ -16,8 +16,9 @@ export default class Trip {
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
 
+    this._sortComponent = null;
+
     this._eventsComponent = new EventsView();
-    this._sortComponent = new SortView();
     this._pointListComponent = new PointListView();
     this._noPointComponent = new NoPointView();
 
@@ -50,18 +51,14 @@ export default class Trip {
   }
 
   _handleSortTypeChange(sortType) {
-    // - Сортируем задачи
     if (this._currentSortType === sortType) {
       return;
     }
 
     this._currentSortType = sortType;
 
-    // - Очищаем список
-    this._clearPointList();
-
-    // - Рендерим список заново
-    this._renderPointList();
+    this._clearContentBlock();
+    this._renderContentBlock();
   }
 
   _handleModeChange() {
@@ -106,18 +103,27 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
+        this._clearContentBlock();
+        this._renderContentBlock();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this._clearContentBlock({resetSortType: false});
+        this._renderContentBlock();
         break;
     }
   }
 
-
   _renderSort() {
     // Метод для рендеринга сортировки
-    render(this._eventsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    render(this._eventsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {
@@ -132,11 +138,27 @@ export default class Trip {
     this._pointPresenter.clear();
   }
 
+  _clearContentBlock({resetSortType = false} = {}) {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter.clear();
+
+    remove(this._sortComponent);
+    remove(this._noPointComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DAY;
+    }
+  }
+
   _renderPointList() {
     // метод по отрисовки точек маршрута в списке
     this._getPoints().forEach((point) => {
       this._renderPoint(point);
     });
+  }
+
+  _renderPoints(points) {
+    points.forEach((point) => this._renderPoint(point));
   }
 
   _renderNoPoint() {
@@ -146,15 +168,17 @@ export default class Trip {
 
   _renderContentBlock() {
     // Метод для инициализации (начала работы) модуля
+    const points = this._getPoints();
+    const pointCount = points.length;
 
-    if (this._getPoints().length === 0) {
+    if (pointCount === 0) {
       this._renderNoPoint();
-    } else {
-      // Отрисовывает сортировку
-      this._renderSort();
-
-      // Отрисовывает точки маршрута  в списке
-      this._renderPointList();
+      return;
     }
+    // Отрисовывает сортировку
+    this._renderSort();
+
+    // Отрисовывает точки маршрута  в списке
+    this._renderPoints(points);
   }
 }

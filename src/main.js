@@ -45,5 +45,5 @@ const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-co
 render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
 
 // Основная часть
-tripPresenter.init(points, destinationCities);
+tripPresenter.init();
 

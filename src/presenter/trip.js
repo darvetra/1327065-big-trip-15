@@ -1,5 +1,4 @@
 import {render, RenderPosition} from '../utils/render.js';
-import {updateItem} from '../utils/common.js';
 import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
 import {SortType} from '../const.js';
 
@@ -27,16 +26,7 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripPoints, destinationCities) {
-    // Метод для инициализации (начала работы) модуля
-    this._tripPoints = tripPoints.slice();
-    this._destinationCities = destinationCities.slice();
-
-    // 1. В отличии от сортировки по любому параметру,
-    // исходный порядок можно сохранить только одним способом -
-    // сохранив исходный массив:
-    this._sourcedTripPoints = tripPoints.slice();
-
+  init() {
     render(this._tripContainer, this._eventsComponent, RenderPosition.BEFOREEND);
     render(this._eventsComponent, this._pointListComponent, RenderPosition.BEFOREEND);
 
@@ -44,30 +34,16 @@ export default class Trip {
   }
 
   _getPoints() {
-    return this._tripModel.getPoints();
-  }
-
-  _sortPoints(sortType) {
-    this._currentSortType = sortType;
-
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _tripPoints
     switch (this._currentSortType) {
       case SortType.DAY:
-        this._tripPoints = this._tripPoints.sort(sortByDate);
-        break;
+        return this._tripModel.getPoints().slice().sort(sortByDate);
       case SortType.TIME:
-        this._tripPoints = this._tripPoints.sort(sortByTime);
-        break;
+        return this._tripModel.getPoints().slice().sort(sortByTime);
       case SortType.PRICE:
-        this._tripPoints = this._tripPoints.sort(sortByPrice);
-        break;
-      default:
-        // 3. А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _tripPoints исходный массив
-        this._tripPoints = this._sourcedTripPoints.slice();
+        return this._tripModel.getPoints().slice().sort(sortByPrice);
     }
+
+    return this._tripModel.getPoints();
   }
 
   _handleSortTypeChange(sortType) {
@@ -76,13 +52,13 @@ export default class Trip {
       return;
     }
 
-    this._sortPoints(sortType);
+    this._currentSortType = sortType;
 
     // - Очищаем список
     this._clearPointList();
 
     // - Рендерим список заново
-    this._renderPointList(this._pointListComponent, this._tripPoints);
+    this._renderPointList();
   }
 
   _handleModeChange() {
@@ -90,8 +66,7 @@ export default class Trip {
   }
 
   _handlePointChange(updatedPoint) {
-    this._tripPoints = updateItem(this._tripPoints, updatedPoint);
-    this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
+    // Здесь будем вызывать обновление модели
     this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);
   }
 
@@ -101,9 +76,8 @@ export default class Trip {
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _renderPoint(container, point) {
+  _renderPoint(point) {
     // Метод, с логикой по созданию и рендерингу точки маршрута
-
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange, this._handleModeChange);
     pointPresenter.init(point, this._destinationCities);
     this._pointPresenter.set(point.id, pointPresenter);
@@ -114,10 +88,10 @@ export default class Trip {
     this._pointPresenter.clear();
   }
 
-  _renderPointList(container, items) {
+  _renderPointList() {
     // метод по отрисовки точек маршрута в списке
-    items.forEach((point) => {
-      this._renderPoint(container, point);
+    this._getPoints().forEach((point) => {
+      this._renderPoint(point);
     });
   }
 
@@ -129,15 +103,14 @@ export default class Trip {
   _renderContentBlock() {
     // Метод для инициализации (начала работы) модуля
 
-    if (this._tripPoints.length === 0) {
+    if (this._getPoints().length === 0) {
       this._renderNoPoint();
     } else {
-
       // Отрисовывает сортировку
       this._renderSort();
 
       // Отрисовывает точки маршрута  в списке
-      this._renderPointList(this._pointListComponent, this._tripPoints.sort(sortByDate));
+      this._renderPointList();
     }
   }
 }

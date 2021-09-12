@@ -21,9 +21,12 @@ export default class Trip {
     this._pointListComponent = new PointListView();
     this._noPointComponent = new NoPointView();
 
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
-    this._handlePointChange = this._handlePointChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._tripModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -65,10 +68,29 @@ export default class Trip {
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handlePointChange(updatedPoint) {
-    // Здесь будем вызывать обновление модели
-    this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);
+  // _handlePointChange(updatedPoint) {
+  // Здесь будем вызывать обновление модели
+  // this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);
+  // }
+
+  _handleViewAction(actionType, updateType, update) {
+    // eslint-disable-next-line no-console
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   }
+
+  _handleModelEvent(updateType, data) {
+    // eslint-disable-next-line no-console
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  }
+
 
   _renderSort() {
     // Метод для рендеринга сортировки
@@ -78,7 +100,7 @@ export default class Trip {
 
   _renderPoint(point) {
     // Метод, с логикой по созданию и рендерингу точки маршрута
-    const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._pointListComponent, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(point, this._destinationCities);
     this._pointPresenter.set(point.id, pointPresenter);
   }

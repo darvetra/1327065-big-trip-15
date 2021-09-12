@@ -16,7 +16,7 @@ const destinationCities = DESTINATION_CITIES.map((item) => generateDestination(i
 const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
 
 const tripModel = new TripModel();
-tripModel.setPoints(points);
+tripModel.setPoints(points, destinationCities);
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');

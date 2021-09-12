@@ -1,16 +1,17 @@
-import AbstractObserver from './abstract-observer';
+import AbstractObserver from '../utils/abstract-observer.js';
 
 export default class Trip extends AbstractObserver {
   constructor() {
     super();
-    this._trip = [];
+    this._tripPoints = [];
   }
 
-  setPoints(points) {
-    this._trip = points.slice();
+  setPoints(tripPoints, destinationCities) {
+    this._tripPoints = tripPoints.slice();
+    this._destinationCities = destinationCities.slice();
   }
 
   getPoints() {
-    return this._trip;
+    return this._tripPoints;
   }
 }

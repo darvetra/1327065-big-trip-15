@@ -1,4 +1,4 @@
-import AbstractObserver from './abstract-observer';
+import AbstractObserver from '../utils/abstract-observer.js';
 
 export default class Points extends AbstractObserver {
   constructor() {

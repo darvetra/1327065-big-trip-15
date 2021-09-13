@@ -9,18 +9,12 @@ import FilterModel from './model/filter.js';
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
-import FilterView from './view/filter.js';
 
 import TripPresenter from './presenter/trip.js';
+import FilterPresenter from './presenter/filter.js';
 
 const destinationCities = DESTINATION_CITIES.map((item) => generateDestination(item));
 const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
-const filters = [
-  {
-    type: 'everything',
-    name: 'EVERYTHING',
-  },
-];
 
 const tripModel = new TripModel();
 tripModel.setPoints(points, destinationCities);
@@ -51,7 +45,8 @@ render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREE
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, new FilterView(filters, 'everything'), RenderPosition.BEFOREEND);
+const filterPresenter = new FilterPresenter(tripControlsFiltersElement, filterModel, tripModel);
+filterPresenter.init();
 
 // Основная часть
 tripPresenter.init();

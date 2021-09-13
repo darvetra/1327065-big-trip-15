@@ -8,11 +8,13 @@ dayjs.extend(isSameOrAfter);
 const now = dayjs();
 
 const isFuture = (pointDate) => {
-  pointDate.isSameOrAfter(now);
+  const date = dayjs(pointDate.dateFrom);
+  return date.isSameOrAfter(now);
 };
 
 const isPast = (pointDate) => {
-  pointDate.isBefore(now);
+  const date = dayjs(pointDate.dateTo);
+  return date.isBefore(now);
 };
 
 export const filter = {

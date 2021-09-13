@@ -1,6 +1,5 @@
 import FilterView from '../view/filter.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
-import {filter} from '../utils/filter.js';
 import {FilterType, UpdateType} from '../const.js';
 
 export default class Filter {
@@ -47,20 +46,18 @@ export default class Filter {
   }
 
   _getFilters() {
-    // const points = this._pointsModel.getPoints();
-
     return [
       {
         type: FilterType.EVERYTHING,
-        name: 'Everything',
+        name: 'everything',
       },
       {
         type: FilterType.FUTURE,
-        name: 'Future',
+        name: 'future',
       },
       {
         type: FilterType.PAST,
-        name: 'Past',
+        name: 'past',
       },
     ];
   }

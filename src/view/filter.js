@@ -5,7 +5,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
 
   return `<div class="trip-filters__filter">
     <input
-    id="filter-past"
+    id="filter-${name}"
     class="trip-filters__filter-input  visually-hidden"
     type="radio"
     name="trip-filter"

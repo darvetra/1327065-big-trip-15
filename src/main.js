@@ -4,6 +4,7 @@ import {createTripInfo} from './utils/date.js';
 
 import {generateDestination, generatePoint} from './mock/point.js';
 import TripModel from './model/trip.js';
+import FilterModel from './model/filter.js';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
@@ -17,6 +18,8 @@ const points = Array.from({ length: pointCount }, () => generatePoint(destinatio
 
 const tripModel = new TripModel();
 tripModel.setPoints(points, destinationCities);
+
+const filterModel = new FilterModel();
 
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');

@@ -133,11 +133,6 @@ export default class Trip {
     this._pointPresenter.set(point.id, pointPresenter);
   }
 
-  _clearPointList() {
-    this._pointPresenter.forEach((presenter) => presenter.destroy());
-    this._pointPresenter.clear();
-  }
-
   _clearContentBlock({resetSortType = false} = {}) {
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
@@ -148,13 +143,6 @@ export default class Trip {
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
     }
-  }
-
-  _renderPointList() {
-    // метод по отрисовки точек маршрута в списке
-    this._getPoints().forEach((point) => {
-      this._renderPoint(point);
-    });
   }
 
   _renderPoints(points) {

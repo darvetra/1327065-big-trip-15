@@ -3,7 +3,7 @@ import {render, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
 import {generateDestination, generatePoint} from './mock/point.js';
-import TripModel from './model/points.js';
+import TripModel from './model/trip.js';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';

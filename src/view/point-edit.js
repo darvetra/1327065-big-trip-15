@@ -248,6 +248,7 @@ export default class PointEdit extends SmartView {
     this._datepickerEndTime = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -258,6 +259,17 @@ export default class PointEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(point) {
@@ -274,6 +286,7 @@ export default class PointEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setFormResetHandler(this._callback.formReset);
     this.setFormRollupHandler(this._callback.formReset);
   }
@@ -355,6 +368,20 @@ export default class PointEdit extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    if(this._isAddingForm === true) {
+      return;
+    }
+
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
   }
 
   setFormResetHandler(callback) {

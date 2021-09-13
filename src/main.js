@@ -15,6 +15,12 @@ import TripPresenter from './presenter/trip.js';
 
 const destinationCities = DESTINATION_CITIES.map((item) => generateDestination(item));
 const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
+const filters = [
+  {
+    type: 'everything',
+    name: 'EVERYTHING',
+  },
+];
 
 const tripModel = new TripModel();
 tripModel.setPoints(points, destinationCities);
@@ -45,7 +51,7 @@ render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREE
 
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
+render(tripControlsFiltersElement, new FilterView(filters, 'everything'), RenderPosition.BEFOREEND);
 
 // Основная часть
 tripPresenter.init();

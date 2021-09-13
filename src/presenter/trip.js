@@ -1,7 +1,7 @@
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
 import {filter} from '../utils/filter.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 import EventsView from '../view/events.js';
 import SortView from '../view/sort.js';
@@ -16,13 +16,14 @@ export default class Trip {
     this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
+    this._filterType = FilterType.EVERYTHING;
     this._currentSortType = SortType.DAY;
 
     this._sortComponent = null;
+    this._noPointComponent = null;
 
     this._eventsComponent = new EventsView();
     this._pointListComponent = new PointListView();
-    this._noPointComponent = new NoPointView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -41,9 +42,9 @@ export default class Trip {
   }
 
   _getPoints() {
-    const filterType = this._filterModel.getFilter();
+    this._filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    const filtredPoints = filter[filterType](points);
+    const filtredPoints = filter[this._filterType](points);
 
     switch (this._currentSortType) {
       case SortType.DAY:
@@ -145,7 +146,10 @@ export default class Trip {
     this._pointPresenter.clear();
 
     remove(this._sortComponent);
-    remove(this._noPointComponent);
+
+    if(this._noPointComponent) {
+      remove(this._noPointComponent);
+    }
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
@@ -157,7 +161,7 @@ export default class Trip {
   }
 
   _renderNoPoint() {
-    // Метод для рендеринга заглушки
+    this._noPointComponent = new NoPointView(this._filterType);
     render(this._eventsComponent, this._noPointComponent, RenderPosition.BEFOREEND);
   }
 

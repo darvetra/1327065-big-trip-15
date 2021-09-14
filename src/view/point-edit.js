@@ -239,7 +239,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, destination, isAddingForm) {
+  constructor(isAddingForm, point = BLANK_POINT, destination) {
     super();
     this._data = PointEdit.parsePointToData(point);
     this._destination = destination;

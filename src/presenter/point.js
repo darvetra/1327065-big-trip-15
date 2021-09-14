@@ -114,12 +114,15 @@ export default class Point {
   _handleFormSubmit(point) {
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+
+    // Пока что оставляем, комментарий, нужно
     // const isMinorUpdate =
     //   !isDatesEqual(this._task.dueDate, update.dueDate) ||
     //   isTaskRepeating(this._task.repeating) !== isTaskRepeating(update.repeating);
 
     this._changeData(
       UserAction.UPDATE_POINT,
+      // Пока что оставляем, комментарий, нужно
       // isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       UpdateType.MINOR,
       point,

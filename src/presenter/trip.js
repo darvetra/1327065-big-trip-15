@@ -83,6 +83,7 @@ export default class Trip {
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
+  // Пока что оставляем, комментарий, нужно
   // _handlePointChange(updatedPoint) {
   // Здесь будем вызывать обновление модели
   // this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);

@@ -2,6 +2,8 @@ import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
 
+import he from 'he';
+
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -81,7 +83,7 @@ const createPointEditEventTypeTemplate = () => (
 );
 
 const createPointEditDestinationCityTemplate = () => (
-  DESTINATION_CITIES.map((destinationCity) => `<option value="${destinationCity}"></option>`).join('')
+  DESTINATION_CITIES.map((destinationCity) => `<option value="${he.encode(destinationCity)}"></option>`).join('')
 );
 
 const createEditPointTemplate = (data = {}, isAddingForm) => {
@@ -144,7 +146,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1">
           <datalist id="destination-list-1">
 
             ${destinationCity}
@@ -165,7 +167,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" pattern="^[ 0-9]+$">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

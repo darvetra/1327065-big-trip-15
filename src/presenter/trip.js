@@ -90,9 +90,6 @@ export default class Trip {
   // }
 
   _handleViewAction(actionType, updateType, update) {
-    // eslint-disable-next-line no-console
-    console.log(actionType, updateType, update);
-
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
@@ -111,9 +108,6 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data) {
-    // eslint-disable-next-line no-console
-    console.log(updateType, data);
-
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:

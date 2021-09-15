@@ -1,7 +1,7 @@
-import {render, RenderPosition} from '../utils/render.js';
-import {updateItem} from '../utils/common.js';
+import {render, remove, RenderPosition} from '../utils/render.js';
 import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
-import {SortType} from '../const.js';
+import {filter} from '../utils/filter.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 import EventsView from '../view/events.js';
 import SortView from '../view/sort.js';
@@ -9,130 +9,181 @@ import PointListView from '../view/point-list.js';
 import NoPointView from '../view/no-point.js';
 
 import PointPresenter from './point.js';
+import NewPointPresenter from './new-point.js';
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel, filterModel) {
+    this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
+    this._filterType = FilterType.EVERYTHING;
     this._currentSortType = SortType.DAY;
 
-    this._eventsComponent = new EventsView();
-    this._sortComponent = new SortView();
-    this._pointListComponent = new PointListView();
-    this._noPointComponent = new NoPointView();
+    this._sortComponent = null;
+    this._noPointComponent = null;
 
+    this._eventsComponent = new EventsView();
+    this._pointListComponent = new PointListView();
+
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
-    this._handlePointChange = this._handlePointChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
+    this._newPointPresenter = new NewPointPresenter(this._pointListComponent, this._handleViewAction);
   }
 
-  init(tripPoints, destinationCities) {
-    // Метод для инициализации (начала работы) модуля
-    this._tripPoints = tripPoints.slice();
-    this._destinationCities = destinationCities.slice();
-
-    // 1. В отличии от сортировки по любому параметру,
-    // исходный порядок можно сохранить только одним способом -
-    // сохранив исходный массив:
-    this._sourcedTripPoints = tripPoints.slice();
-
+  init() {
     render(this._tripContainer, this._eventsComponent, RenderPosition.BEFOREEND);
     render(this._eventsComponent, this._pointListComponent, RenderPosition.BEFOREEND);
 
     this._renderContentBlock();
   }
 
-  _sortPoints(sortType) {
-    this._currentSortType = sortType;
+  createPoint() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newPointPresenter.init();
+  }
 
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _tripPoints
+  _getPoints() {
+    this._filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filtredPoints = filter[this._filterType](points);
+
     switch (this._currentSortType) {
       case SortType.DAY:
-        this._tripPoints = this._tripPoints.sort(sortByDate);
-        break;
+        return filtredPoints.sort(sortByDate);
       case SortType.TIME:
-        this._tripPoints = this._tripPoints.sort(sortByTime);
-        break;
+        return filtredPoints.sort(sortByTime);
       case SortType.PRICE:
-        this._tripPoints = this._tripPoints.sort(sortByPrice);
-        break;
-      default:
-        // 3. А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _tripPoints исходный массив
-        this._tripPoints = this._sourcedTripPoints.slice();
+        return filtredPoints.sort(sortByPrice);
     }
+
+    return filtredPoints;
   }
 
   _handleSortTypeChange(sortType) {
-    // - Сортируем задачи
     if (this._currentSortType === sortType) {
       return;
     }
 
-    this._sortPoints(sortType);
+    this._currentSortType = sortType;
 
-    // - Очищаем список
-    this._clearPointList();
-
-    // - Рендерим список заново
-    this._renderPointList(this._pointListComponent, this._tripPoints);
+    this._clearContentBlock();
+    this._renderContentBlock();
   }
 
   _handleModeChange() {
+    this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handlePointChange(updatedPoint) {
-    this._tripPoints = updateItem(this._tripPoints, updatedPoint);
-    this._sourcedTripPoints = updateItem(this._sourcedTripPoints, updatedPoint);
-    this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);
+  // Пока что оставляем, комментарий, нужно
+  // _handlePointChange(updatedPoint) {
+  // Здесь будем вызывать обновление модели
+  // this._pointPresenter.get(updatedPoint.id).init(updatedPoint, this._destinationCities);
+  // }
+
+  _handleViewAction(actionType, updateType, update) {
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
+  }
+
+  _handleModelEvent(updateType, data) {
+    // В зависимости от типа изменений решаем, что делать:
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this._pointPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        this._clearContentBlock();
+        this._renderContentBlock();
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        this._clearContentBlock({resetSortType: false});
+        this._renderContentBlock();
+        break;
+    }
   }
 
   _renderSort() {
     // Метод для рендеринга сортировки
-    render(this._eventsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    render(this._eventsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderPoint(container, point) {
+  _renderPoint(point) {
     // Метод, с логикой по созданию и рендерингу точки маршрута
-
-    const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._pointListComponent, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(point, this._destinationCities);
     this._pointPresenter.set(point.id, pointPresenter);
   }
 
-  _clearPointList() {
+  _clearContentBlock({resetSortType = false} = {}) {
+    this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
+
+    remove(this._sortComponent);
+
+    if(this._noPointComponent) {
+      remove(this._noPointComponent);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DAY;
+    }
   }
 
-  _renderPointList(container, items) {
-    // метод по отрисовки точек маршрута в списке
-    items.forEach((point) => {
-      this._renderPoint(container, point);
-    });
+  _renderPoints(points) {
+    points.forEach((point) => this._renderPoint(point));
   }
 
   _renderNoPoint() {
-    // Метод для рендеринга заглушки
+    this._noPointComponent = new NoPointView(this._filterType);
     render(this._eventsComponent, this._noPointComponent, RenderPosition.BEFOREEND);
   }
 
   _renderContentBlock() {
     // Метод для инициализации (начала работы) модуля
+    const points = this._getPoints();
+    const pointCount = points.length;
 
-    if (this._tripPoints.length === 0) {
+    if (pointCount === 0) {
       this._renderNoPoint();
-    } else {
-
-      // Отрисовывает сортировку
-      this._renderSort();
-
-      // Отрисовывает точки маршрута  в списке
-      this._renderPointList(this._pointListComponent, this._tripPoints.sort(sortByDate));
+      return;
     }
+    // Отрисовывает сортировку
+    this._renderSort();
+
+    // Отрисовывает точки маршрута  в списке
+    this._renderPoints(points);
   }
 }

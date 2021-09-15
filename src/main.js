@@ -3,22 +3,27 @@ import {render, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
 import {generateDestination, generatePoint} from './mock/point.js';
+import TripModel from './model/trip.js';
+import FilterModel from './model/filter.js';
 
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
-import FilterView from './view/filter.js';
 
 import TripPresenter from './presenter/trip.js';
+import FilterPresenter from './presenter/filter.js';
 
 const destinationCities = DESTINATION_CITIES.map((item) => generateDestination(item));
 const points = Array.from({ length: pointCount }, () => generatePoint(destinationCities));
 
+const tripModel = new TripModel();
+tripModel.setPoints(points, destinationCities);
+
+const filterModel = new FilterModel();
+
 const sitePageHeaderElement = document.querySelector('.page-header');
 const sitePageMainElement = document.querySelector('.page-main');
 const siteBodyContainerElement = sitePageMainElement.querySelector('.page-body__container');
-
-const tripPresenter = new TripPresenter(siteBodyContainerElement);
 
 // Хэдер
 // Отрисовывает информацию о поездке (маршрут и дата)
@@ -36,10 +41,18 @@ render(tripInfoElement, new TripPriceView(totalPrice), RenderPosition.BEFOREEND)
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
 render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 
+// Основная часть
+const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel, filterModel);
+
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
-render(tripControlsFiltersElement, new FilterView(), RenderPosition.BEFOREEND);
+const filterPresenter = new FilterPresenter(tripControlsFiltersElement, filterModel, tripModel);
+filterPresenter.init();
 
-// Основная часть
-tripPresenter.init(points, destinationCities);
+// Отрисовывает блок с точками путешествия
+tripPresenter.init();
 
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

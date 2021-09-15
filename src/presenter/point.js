@@ -1,4 +1,5 @@
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
 
 import PointView from '../view/point.js';
 import PointEditView from '../view/point-edit.js';
@@ -21,6 +22,7 @@ export default class Point {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFormReset = this._handleFormReset.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
@@ -33,11 +35,12 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(this._point);
-    this._pointEditComponent = new PointEditView(this._point, this._destination, true);
+    this._pointEditComponent = new PointEditView(false, this._point, this._destination);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setFormRollupHandler(this._handleFormReset);
     this._pointEditComponent.setFormResetHandler(this._handleFormReset);
 
@@ -96,6 +99,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,
@@ -107,8 +112,30 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+
+    // Пока что оставляем, комментарий, нужно
+    // const isMinorUpdate =
+    //   !isDatesEqual(this._task.dueDate, update.dueDate) ||
+    //   isTaskRepeating(this._task.repeating) !== isTaskRepeating(update.repeating);
+
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      // Пока что оставляем, комментарий, нужно
+      // isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      UpdateType.MINOR,
+      point,
+    );
     this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   }
 
   _handleFormReset() {

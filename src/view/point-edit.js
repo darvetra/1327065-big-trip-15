@@ -2,6 +2,8 @@ import SmartView from './smart.js';
 import {DESTINATION_CITIES, EVENT_TYPES} from '../const.js';
 import {convertHumanDateAndTime} from '../utils/date.js';
 
+import he from 'he';
+
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -81,7 +83,7 @@ const createPointEditEventTypeTemplate = () => (
 );
 
 const createPointEditDestinationCityTemplate = () => (
-  DESTINATION_CITIES.map((destinationCity) => `<option value="${destinationCity}"></option>`).join('')
+  DESTINATION_CITIES.map((destinationCity) => `<option value="${he.encode(destinationCity)}"></option>`).join('')
 );
 
 const createEditPointTemplate = (data = {}, isAddingForm) => {
@@ -144,7 +146,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1">
           <datalist id="destination-list-1">
 
             ${destinationCity}
@@ -165,7 +167,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" pattern="^[ 0-9]+$">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -239,7 +241,7 @@ const createEditPointTemplate = (data = {}, isAddingForm) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, destination, isAddingForm) {
+  constructor(isAddingForm, point = BLANK_POINT, destination) {
     super();
     this._data = PointEdit.parsePointToData(point);
     this._destination = destination;
@@ -248,6 +250,7 @@ export default class PointEdit extends SmartView {
     this._datepickerEndTime = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formRollupHandler = this._formRollupHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -258,6 +261,17 @@ export default class PointEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(point) {
@@ -274,6 +288,7 @@ export default class PointEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setFormResetHandler(this._callback.formReset);
     this.setFormRollupHandler(this._callback.formReset);
   }
@@ -355,6 +370,20 @@ export default class PointEdit extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    if(this._isAddingForm === true) {
+      return;
+    }
+
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
   }
 
   setFormResetHandler(callback) {

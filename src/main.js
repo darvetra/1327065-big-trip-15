@@ -1,4 +1,4 @@
-import {DESTINATION_CITIES, pointCount} from './const.js';
+import {DESTINATION_CITIES, pointCount, MenuItem} from './const.js';
 import {render, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
@@ -38,8 +38,30 @@ const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
 render(tripInfoElement, new TripPriceView(totalPrice), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
+const siteMenuComponent = new SiteMenuView();
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
+render(tripControlsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      // Скрыть статистику
+      // Показать доску
+      // Показать форму добавления новой задачи
+      // Убрать выделение с ADD NEW TASK после сохранения
+      break;
+    case MenuItem.TABLE:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 // Основная часть
 const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel, filterModel);

@@ -42,27 +42,6 @@ const siteMenuComponent = new SiteMenuView();
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
 render(tripControlsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
-const handleSiteMenuClick = (menuItem) => {
-  switch (menuItem) {
-    case MenuItem.ADD_NEW_POINT:
-      // Скрыть статистику
-      // Показать доску
-      // Показать форму добавления новой задачи
-      // Убрать выделение с ADD NEW TASK после сохранения
-      break;
-    case MenuItem.TABLE:
-      // Показать доску
-      // Скрыть статистику
-      break;
-    case MenuItem.STATS:
-      // Скрыть доску
-      // Показать статистику
-      break;
-  }
-};
-
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
 // Основная часть
 const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel, filterModel);
 
@@ -74,7 +53,44 @@ filterPresenter.init();
 // Отрисовывает блок с точками путешествия
 tripPresenter.init();
 
+const handleTaskNewFormClose = () => {
+
+  console.log('Форма добавления точки маршрута закрыта');
+
+  document.querySelector('.trip-main__event-add-btn').disabled = false;
+  siteMenuComponent.setMenuItem(MenuItem.TABLE);
+};
+
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  console.log('Нажата кнопка добавляения точки маршрута');
+
   evt.preventDefault();
-  tripPresenter.createPoint();
+  tripPresenter.createPoint(handleTaskNewFormClose);
+
+  document.querySelector('.trip-main__event-add-btn').disabled = true;
 });
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+
+      console.log('Выбран пункт меню - табло');
+
+      siteMenuComponent.setMenuItem(MenuItem.TABLE);
+
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATS:
+
+      console.log('Выбран пункт меню - статистика');
+
+      siteMenuComponent.setMenuItem(MenuItem.STATS);
+
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);

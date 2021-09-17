@@ -9,6 +9,7 @@ import FilterModel from './model/filter.js';
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
+import StatView from './view/stat.js';
 
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
@@ -48,11 +49,8 @@ const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel, fil
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
 const filterPresenter = new FilterPresenter(tripControlsFiltersElement, filterModel, tripModel);
-filterPresenter.init();
 
-// Отрисовывает блок с точками путешествия
-tripPresenter.init();
-
+// Закрытие формы добавления точки маршрута
 const handleTaskNewFormClose = () => {
 
   console.log('Форма добавления точки маршрута закрыта');
@@ -65,6 +63,7 @@ const handleTaskNewFormClose = () => {
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
 
+// Кнопка добавления точки маршрута
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   console.log('Нажата кнопка добавляения точки маршрута');
 
@@ -74,6 +73,7 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   document.querySelector('.trip-main__event-add-btn').disabled = true;
 });
 
+// Выбор пунктов меню
 let currentMenuItem = MenuItem.TABLE;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -103,3 +103,12 @@ const handleSiteMenuClick = (menuItem) => {
 };
 
 siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+// Отрисовка блоков
+filterPresenter.init();
+// Для удобства отладки скроем доску
+// tripPresenter.init();
+
+// и отобразим сразу статистику
+render(siteBodyContainerElement, new StatView(tripModel.getPoints()), RenderPosition.BEFOREEND);
+

@@ -1,4 +1,4 @@
-import {DESTINATION_CITIES, pointCount, MenuItem} from './const.js';
+import {DESTINATION_CITIES, pointCount, MenuItem, UpdateType, FilterType} from './const.js';
 import {render, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
@@ -57,6 +57,10 @@ const handleTaskNewFormClose = () => {
 
   console.log('Форма добавления точки маршрута закрыта');
 
+  tripPresenter.destroy();
+  filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+  tripPresenter.init();
+
   document.querySelector('.trip-main__event-add-btn').disabled = false;
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
@@ -70,25 +74,30 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   document.querySelector('.trip-main__event-add-btn').disabled = true;
 });
 
+let currentMenuItem = MenuItem.TABLE;
+
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
+      if (currentMenuItem !== MenuItem.TABLE) {
 
-      console.log('Выбран пункт меню - табло');
+        console.log('Выбран пункт меню - табло');
 
-      siteMenuComponent.setMenuItem(MenuItem.TABLE);
-
-      // Показать доску
-      // Скрыть статистику
+        siteMenuComponent.setMenuItem(MenuItem.TABLE);
+        tripPresenter.init();
+        // Скрыть статистику
+        currentMenuItem = MenuItem.TABLE;
+      }
       break;
     case MenuItem.STATS:
+      if (currentMenuItem !== MenuItem.STATS) {
+        console.log('Выбран пункт меню - статистика');
 
-      console.log('Выбран пункт меню - статистика');
-
-      siteMenuComponent.setMenuItem(MenuItem.STATS);
-
-      // Скрыть доску
-      // Показать статистику
+        siteMenuComponent.setMenuItem(MenuItem.STATS);
+        tripPresenter.destroy();
+        // Показать статистику
+        currentMenuItem = MenuItem.STATS;
+      }
       break;
   }
 };

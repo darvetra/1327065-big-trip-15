@@ -3,7 +3,7 @@ import {sortByDate, sortByTime, sortByPrice} from '../utils/sort.js';
 import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
-import EventsView from '../view/events.js';
+import TableView from '../view/table.js';
 import SortView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import NoPointView from '../view/no-point.js';
@@ -23,7 +23,7 @@ export default class Trip {
     this._sortComponent = null;
     this._noPointComponent = null;
 
-    this._eventsComponent = new EventsView();
+    this._tableComponent = new TableView();
     this._pointListComponent = new PointListView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -31,22 +31,30 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._newPointPresenter = new NewPointPresenter(this._pointListComponent, this._handleViewAction);
   }
 
   init() {
-    render(this._tripContainer, this._eventsComponent, RenderPosition.BEFOREEND);
-    render(this._eventsComponent, this._pointListComponent, RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._tableComponent, RenderPosition.BEFOREEND);
+    render(this._tableComponent, this._pointListComponent, RenderPosition.BEFOREEND);
 
-    this._renderContentBlock();
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
+    this._renderTable();
+  }
+
+  destroy() {
+    this._clearTable({ resetSortType: true });
+
+    remove(this._pointListComponent);
+    remove(this._tableComponent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint(callback) {
-    this._currentSortType = SortType.DAY;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newPointPresenter.init(callback);
   }
 
@@ -74,8 +82,8 @@ export default class Trip {
 
     this._currentSortType = sortType;
 
-    this._clearContentBlock();
-    this._renderContentBlock();
+    this._clearTable();
+    this._renderTable();
   }
 
   _handleModeChange() {
@@ -116,13 +124,13 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
-        this._clearContentBlock();
-        this._renderContentBlock();
+        this._clearTable();
+        this._renderTable();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
-        this._clearContentBlock({resetSortType: false});
-        this._renderContentBlock();
+        this._clearTable({resetSortType: false});
+        this._renderTable();
         break;
     }
   }
@@ -136,7 +144,7 @@ export default class Trip {
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
-    render(this._eventsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(this._tableComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {
@@ -146,8 +154,9 @@ export default class Trip {
     this._pointPresenter.set(point.id, pointPresenter);
   }
 
-  _clearContentBlock({resetSortType = false} = {}) {
-    this._newPointPresenter.destroy();
+  _clearTable({resetSortType = false} = {}) {
+    // из-за строчки ниже зацикливается метод дестрой нью поинта презентера, пока оставь коммент
+    // this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
 
@@ -168,10 +177,10 @@ export default class Trip {
 
   _renderNoPoint() {
     this._noPointComponent = new NoPointView(this._filterType);
-    render(this._eventsComponent, this._noPointComponent, RenderPosition.BEFOREEND);
+    render(this._tableComponent, this._noPointComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderContentBlock() {
+  _renderTable() {
     // Метод для инициализации (начала работы) модуля
     const points = this._getPoints();
     const pointCount = points.length;

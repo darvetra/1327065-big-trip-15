@@ -9,7 +9,7 @@ import FilterModel from './model/filter.js';
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
-import StatView from './view/stat.js';
+import StatsView from './view/stats.js';
 
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
@@ -110,5 +110,5 @@ filterPresenter.init();
 // tripPresenter.init();
 
 // и отобразим сразу статистику
-render(siteBodyContainerElement, new StatView(tripModel.getPoints()), RenderPosition.BEFOREEND);
+render(siteBodyContainerElement, new StatsView(tripModel.getPoints()), RenderPosition.BEFOREEND);
 

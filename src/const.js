@@ -1,4 +1,4 @@
-export const pointCount = 15;
+export const pointCount = 3;
 
 export const EVENT_TYPES = [
   'taxi',

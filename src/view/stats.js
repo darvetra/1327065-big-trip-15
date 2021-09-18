@@ -173,7 +173,7 @@ const createStatisticsTemplate = () => {
   </section>`;
 };
 
-export default class Stat extends SmartView {
+export default class Stats extends SmartView {
   constructor() {
     super();
   }

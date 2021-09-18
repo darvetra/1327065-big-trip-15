@@ -1,26 +1,37 @@
 import SmartView from './smart.js';
 
+import {statCostsByPointType, sortEventTypesByData} from '../utils/stats';
+import {EVENT_TYPES} from '../const';
+
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+const BAR_HEIGHT = 55;
 
-
-// Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-// const BAR_HEIGHT = 55;
-// moneyCtx.height = BAR_HEIGHT * 5;
-// typeCtx.height = BAR_HEIGHT * 5;
 // timeCtx.height = BAR_HEIGHT * 5;
 
-const renderMoneyChart = (moneyCtx) => {
+const renderMoneyChart = (moneyCtx, points) => {
   //Функция для отрисовки графика по расходам
+
+  moneyCtx.height = BAR_HEIGHT * EVENT_TYPES.length;
+
+  const costsByPointType = EVENT_TYPES.map((type) => statCostsByPointType(type, points));
+  const sortedDataTypesCost = sortEventTypesByData(EVENT_TYPES, costsByPointType);
+
+  const sortEventTitles = [];
+  const sortEventData = [];
+  sortedDataTypesCost.forEach((costTypeData) => {
+    sortEventTitles.push(costTypeData.costType.toUpperCase());
+    sortEventData.push(costTypeData.sum);
+  });
 
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: sortEventTitles,
       datasets: [{
-        data: [400, 300, 200, 160, 150, 100],
+        data: sortEventData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -35,7 +46,7 @@ const renderMoneyChart = (moneyCtx) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => '€ ${val}',
+          formatter: (val) => `€ ${val}`,
         },
       },
       title: {
@@ -83,6 +94,9 @@ const renderMoneyChart = (moneyCtx) => {
 const renderTypeChart = (typeCtx) => {
   //Функция для отрисовки графика по типу транспорта
 
+  typeCtx.height = BAR_HEIGHT * EVENT_TYPES.length;
+
+
   return new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -104,7 +118,7 @@ const renderTypeChart = (typeCtx) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => '${val}x',
+          formatter: (val) => `${val}x`,
         },
       },
       title: {
@@ -149,15 +163,12 @@ const renderTypeChart = (typeCtx) => {
   });
 };
 
-const renderTimeChart = (timeCtx) => {
+// const renderTimeChart = (timeCtx) => {
+//
+// }
 
-}
-
-const createStatisticsTemplate = () => {
-
-  // Возможные данные
-
-  return `<section class="statistics">
+const createStatisticsTemplate = () => (
+  `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
 
     <div class="statistics__item">
@@ -171,8 +182,8 @@ const createStatisticsTemplate = () => {
     <div class="statistics__item">
       <canvas class="statistics__chart" id="time-spend" width="900"></canvas>
     </div>
-  </section>`;
-};
+  </section>`
+);
 
 export default class Stats extends SmartView {
   constructor(points) {
@@ -197,7 +208,8 @@ export default class Stats extends SmartView {
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._data);
+    // return createStatisticsTemplate(this._data);
+    return createStatisticsTemplate();
   }
 
   restoreHandlers() {
@@ -205,13 +217,13 @@ export default class Stats extends SmartView {
   }
 
   _setCharts() {
-    const {points, dateFrom, dateTo} = this._data;
+    // const {points, dateFrom, dateTo} = this._data;
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
-    const timeCtx = this.getElement().querySelector('#time-spend');
+    // const timeCtx = this.getElement().querySelector('#time-spend');
 
-    this._moneyChart = renderMoneyChart(moneyCtx, points);
-    this._typeChart = renderTypeChart(typeCtx, points);
-    this._timeChart = renderTimeChart(timeCtx, points, dateFrom, dateTo);
+    this._moneyChart = renderMoneyChart(moneyCtx, this._points);
+    this._typeChart = renderTypeChart(typeCtx, this._points);
+    // this._timeChart = renderTimeChart(timeCtx, points, dateFrom, dateTo);
   }
 }

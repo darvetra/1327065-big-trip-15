@@ -52,9 +52,6 @@ const filterPresenter = new FilterPresenter(tripControlsFiltersElement, filterMo
 
 // Закрытие формы добавления точки маршрута
 const handleTaskNewFormClose = () => {
-
-  console.log('Форма добавления точки маршрута закрыта');
-
   tripPresenter.destroy();
   filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
   tripPresenter.init();
@@ -65,11 +62,8 @@ const handleTaskNewFormClose = () => {
 
 // Кнопка добавления точки маршрута
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-  console.log('Нажата кнопка добавляения точки маршрута');
-
   evt.preventDefault();
   tripPresenter.createPoint(handleTaskNewFormClose);
-
   document.querySelector('.trip-main__event-add-btn').disabled = true;
 });
 
@@ -80,22 +74,19 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       if (currentMenuItem !== MenuItem.TABLE) {
-
-        console.log('Выбран пункт меню - табло');
-
         siteMenuComponent.setMenuItem(MenuItem.TABLE);
         tripPresenter.init();
         // Скрыть статистику
+
         currentMenuItem = MenuItem.TABLE;
       }
       break;
     case MenuItem.STATS:
       if (currentMenuItem !== MenuItem.STATS) {
-        console.log('Выбран пункт меню - статистика');
-
         siteMenuComponent.setMenuItem(MenuItem.STATS);
         tripPresenter.destroy();
         // Показать статистику
+
         currentMenuItem = MenuItem.STATS;
       }
       break;

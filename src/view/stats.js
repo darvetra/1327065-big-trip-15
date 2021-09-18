@@ -3,9 +3,7 @@ import SmartView from './smart.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-// const moneyCtx = document.querySelector('#money');
-// const typeCtx = document.querySelector('#type');
-// const timeCtx = document.querySelector('#time-spend');
+
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 // const BAR_HEIGHT = 55;
@@ -151,6 +149,9 @@ const renderTypeChart = (typeCtx) => {
   });
 };
 
+const renderTimeChart = (timeCtx) => {
+
+}
 
 const createStatisticsTemplate = () => {
 
@@ -174,11 +175,43 @@ const createStatisticsTemplate = () => {
 };
 
 export default class Stats extends SmartView {
-  constructor() {
+  constructor(points) {
     super();
+    this._points = points;
+
+    this._moneyChart = null;
+    this._typeChart = null;
+    this._timeChart = null;
+
+    this._setCharts();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._moneyChart !== null || this._typeChart !== null || this._timeChart !== null) {
+      this._moneyChart = null;
+      this._typeChart = null;
+      this._timeChart = null;
+    }
   }
 
   getTemplate() {
-    return createStatisticsTemplate();
+    return createStatisticsTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setCharts();
+  }
+
+  _setCharts() {
+    const {points, dateFrom, dateTo} = this._data;
+    const moneyCtx = this.getElement().querySelector('#money');
+    const typeCtx = this.getElement().querySelector('#type');
+    const timeCtx = this.getElement().querySelector('#time-spend');
+
+    this._moneyChart = renderMoneyChart(moneyCtx, points);
+    this._typeChart = renderTypeChart(typeCtx, points);
+    this._timeChart = renderTimeChart(timeCtx, points, dateFrom, dateTo);
   }
 }

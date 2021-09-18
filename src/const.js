@@ -1,4 +1,4 @@
-export const pointCount = 15;
+export const pointCount = 20;
 
 export const EVENT_TYPES = [
   'taxi',
@@ -45,4 +45,9 @@ export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
+};
+
+export const MenuItem = {
+  TABLE: 'TABLE',
+  STATS: 'STATS',
 };

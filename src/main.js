@@ -1,5 +1,5 @@
-import {DESTINATION_CITIES, pointCount} from './const.js';
-import {render, RenderPosition} from './utils/render.js';
+import {DESTINATION_CITIES, pointCount, MenuItem, UpdateType, FilterType} from './const.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
 import {generateDestination, generatePoint} from './mock/point.js';
@@ -9,6 +9,7 @@ import FilterModel from './model/filter.js';
 import TripInfoView from './view/trip-info.js';
 import TripPriceView from './view/trip-price.js';
 import SiteMenuView from './view/site-menu.js';
+import StatsView from './view/stats.js';
 
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
@@ -38,8 +39,9 @@ const tripInfoElement = sitePageHeaderElement.querySelector('.trip-info');
 render(tripInfoElement, new TripPriceView(totalPrice), RenderPosition.BEFOREEND);
 
 // Отрисовывает меню
+const siteMenuComponent = new SiteMenuView();
 const tripControlsNavigationElement = sitePageHeaderElement.querySelector('.trip-controls__navigation');
-render(tripControlsNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
+render(tripControlsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
 // Основная часть
 const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel, filterModel);
@@ -47,12 +49,52 @@ const tripPresenter = new TripPresenter(siteBodyContainerElement, tripModel, fil
 // Отрисовывает фильтр
 const tripControlsFiltersElement = sitePageHeaderElement.querySelector('.trip-controls__filters');
 const filterPresenter = new FilterPresenter(tripControlsFiltersElement, filterModel, tripModel);
-filterPresenter.init();
 
-// Отрисовывает блок с точками путешествия
-tripPresenter.init();
+// Закрытие формы добавления точки маршрута
+const handleTaskNewFormClose = () => {
+  tripPresenter.destroy();
+  filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+  tripPresenter.init();
 
+  document.querySelector('.trip-main__event-add-btn').disabled = false;
+  siteMenuComponent.setMenuItem(MenuItem.TABLE);
+};
+
+// Кнопка добавления точки маршрута
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
-  tripPresenter.createPoint();
+  tripPresenter.createPoint(handleTaskNewFormClose);
+  document.querySelector('.trip-main__event-add-btn').disabled = true;
 });
+
+// Выбор пунктов меню
+let currentMenuItem = MenuItem.TABLE;
+let statisticsComponent = null;
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      if (currentMenuItem !== MenuItem.TABLE) {
+        siteMenuComponent.setMenuItem(MenuItem.TABLE);
+        tripPresenter.init();
+        remove(statisticsComponent);
+        currentMenuItem = MenuItem.TABLE;
+      }
+      break;
+    case MenuItem.STATS:
+      if (currentMenuItem !== MenuItem.STATS) {
+        siteMenuComponent.setMenuItem(MenuItem.STATS);
+        tripPresenter.destroy();
+        statisticsComponent = new StatsView(tripModel.getPoints());
+        render(siteBodyContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
+        currentMenuItem = MenuItem.STATS;
+      }
+      break;
+  }
+};
+
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+// Отрисовка блоков
+filterPresenter.init();
+tripPresenter.init();

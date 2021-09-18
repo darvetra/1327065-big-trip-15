@@ -7,7 +7,7 @@ const createEventsTemplate = () => (
   </section>`
 );
 
-export default class Sort extends AbstractView {
+export default class Table extends AbstractView {
   getTemplate() {
     return createEventsTemplate();
   }

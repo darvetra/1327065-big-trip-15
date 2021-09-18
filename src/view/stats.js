@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 
-import {statCostsByPointType, sortEventTypesByData} from '../utils/stats';
+import {statCostsByPointType, sortEventTypesByData, statEventsCountByPointType} from '../utils/stats';
 import {EVENT_TYPES} from '../const';
 
 import Chart from 'chart.js';
@@ -11,13 +11,11 @@ const BAR_HEIGHT = 55;
 // timeCtx.height = BAR_HEIGHT * 5;
 
 const renderMoneyChart = (moneyCtx, points) => {
-  //Функция для отрисовки графика по расходам
-
   moneyCtx.height = BAR_HEIGHT * EVENT_TYPES.length;
 
   const costsByPointType = EVENT_TYPES.map((type) => statCostsByPointType(type, points));
-  const sortedDataTypesCost = sortEventTypesByData(EVENT_TYPES, costsByPointType);
 
+  const sortedDataTypesCost = sortEventTypesByData(EVENT_TYPES, costsByPointType);
   const sortEventTitles = [];
   const sortEventData = [];
   sortedDataTypesCost.forEach((costTypeData) => {
@@ -91,19 +89,26 @@ const renderMoneyChart = (moneyCtx, points) => {
   });
 };
 
-const renderTypeChart = (typeCtx) => {
-  //Функция для отрисовки графика по типу транспорта
-
+const renderTypeChart = (typeCtx, points) => {
   typeCtx.height = BAR_HEIGHT * EVENT_TYPES.length;
 
+  const eventsCountByPointType = EVENT_TYPES.map((type) => statEventsCountByPointType(type, points));
+
+  const sortedDataTypesCost = sortEventTypesByData(EVENT_TYPES, eventsCountByPointType);
+  const sortEventTitles = [];
+  const sortEventData = [];
+  sortedDataTypesCost.forEach((costTypeData) => {
+    sortEventTitles.push(costTypeData.costType.toUpperCase());
+    sortEventData.push(costTypeData.sum);
+  });
 
   return new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: sortEventTitles,
       datasets: [{
-        data: [4, 3, 2, 1, 1, 1],
+        data: sortEventData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',

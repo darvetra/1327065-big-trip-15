@@ -1,5 +1,5 @@
 import {DESTINATION_CITIES, pointCount, MenuItem, UpdateType, FilterType} from './const.js';
-import {render, RenderPosition} from './utils/render.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 import {createTripInfo} from './utils/date.js';
 
 import {generateDestination, generatePoint} from './mock/point.js';
@@ -69,6 +69,7 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 
 // Выбор пунктов меню
 let currentMenuItem = MenuItem.TABLE;
+let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -76,8 +77,7 @@ const handleSiteMenuClick = (menuItem) => {
       if (currentMenuItem !== MenuItem.TABLE) {
         siteMenuComponent.setMenuItem(MenuItem.TABLE);
         tripPresenter.init();
-        // Скрыть статистику
-
+        remove(statisticsComponent);
         currentMenuItem = MenuItem.TABLE;
       }
       break;
@@ -85,8 +85,8 @@ const handleSiteMenuClick = (menuItem) => {
       if (currentMenuItem !== MenuItem.STATS) {
         siteMenuComponent.setMenuItem(MenuItem.STATS);
         tripPresenter.destroy();
-        // Показать статистику
-
+        statisticsComponent = new StatsView(tripModel.getPoints());
+        render(siteBodyContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
         currentMenuItem = MenuItem.STATS;
       }
       break;
@@ -97,9 +97,4 @@ siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 // Отрисовка блоков
 filterPresenter.init();
-// Для удобства отладки скроем доску
-// tripPresenter.init();
-
-// и отобразим сразу статистику
-render(siteBodyContainerElement, new StatsView(tripModel.getPoints()), RenderPosition.BEFOREEND);
-
+tripPresenter.init();
